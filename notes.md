@@ -8,6 +8,8 @@ Similar to C++. References, not pointers. Compiler vs interpreter : compilers de
 
 `public static void main(String [] args)` - executable main method function/class. (String ... args). 
 
+1 file per class
+
 ### Phase 0
 
 schedule, due date, assumes repo creation (done).
