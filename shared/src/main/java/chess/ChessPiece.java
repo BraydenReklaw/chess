@@ -79,7 +79,7 @@ public class ChessPiece {
             case ROOK -> new RookMoveCalculator();
             case PAWN -> new PawnMoveCalculator();
         };
-        return moves.pieceMoves(board, position);
+        return moves.pieceMoves(board, myPosition);
         // throw new RuntimeException("Not implemented");
     }
 }
