@@ -14,6 +14,8 @@ Similar to C++. References, not pointers. Compiler vs interpreter : compilers de
 
 Compile and then run: `javac program.java \n  java program`
 
+collection - like an array, also an interface
+
 ### Javadoc
 
 look up javadox 23 api
@@ -53,7 +55,7 @@ String to int ~ `int Integer.parseInt(String value)`
 
 Concatenation like python is possible, but so is formating: `String s3 = String.format("%s %s", s1, s2);`
 
-Methods:
+Methods (not inclusive):
 
 * int length
 * char charAt
@@ -64,7 +66,44 @@ Methods:
 * String substring(int) - returns the string at index int to end
 * String substring(int, int)
 
-Keep in mind special characters (\n, \t, etc.)
+Keep in mind special characters (\n, \t, etc.). examine the use cases of `\b`
+
+string concatenation inefficient in large numbers, especially in a loop. Use stringbuilder instead: `StringBuilder builder = new StringBuilder(); builder.append("Using "); builder.append("stuff); String str = builder.tostring();`
+
+### Arrays
+
+check out example code
+
+there is a difference between declaring and creating `int [] intArray; intArray = new int[10];` this creates an int array with size 10
+
+`int [] intArray2 = {2, 7, 8}` does both at once and initializes as well
+
+2 ways to iterate:
+
+`for(int i = 0; i < intArray.length; i++)`
+
+`for(int value : intArray)`
+
+// multidimensional arrays //
+
+tictactoe: `char[][] tictactoeboard = new char[3][3];` this creates an array of size 3 holding arrays of size 3. the 2nd 3 need not be present
+
+`tictactoeboard[1][2] = 'X';`
+
+`for(char[] row : tictactoeboard){for(char value : row) {;};}`
+
+### Commandline Arguments
+
+the main class will almost always have an array of arguments given to it which can be accessed and iterated over. you can edit what arguments are passed in
+and used by running main once and then accessing the configuration editor under the file name in upper right by the debug and run buttons.
+
+### Packages, Imports and CLASSPATH
+
+Packages - organize classes. ex: `java.util.Date` a package that contains date utility functions/classes. Note the `package chess` in all chess files.
+
+Import -  kind of like include. Allows shorthand references to packages
+
+CLASSPATH - environment variable. the starting point for directory traversal amidst program operations
 
 ### Phase 0
 
@@ -81,8 +120,16 @@ this.col = col;`
 
 then just return row and column as required
 
-pieceMoves(board, position) - this method requires a board and a position. find the piece at that position on that board, then find all the legal moves.
+pieceMoves(board, position) - this method requires a board and a position. find the piece at that position on that board, then find all the legal moves in associated separate classes.
 
 ChessBoard - use a matrix (array of arrays)
 
 addpeice - allows testing of proper board creation
+
+Interface - away of implementing pieceMoves. holds methods, but no bodies. Look at class example of pieceMoves implementation(mind the class name is different)
+
+## Objects and Classes
+
+Note the slide examples and lecture videos
+
+reference equality vs object equality. References equal if referencing same object. object equality by default checks reference equality
