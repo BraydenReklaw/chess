@@ -34,16 +34,17 @@ public class ChessPosition {
         return col;
     }
 
-    public boolean equals (Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        ChessPosition that = (ChessPosition) obj;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPosition that = (ChessPosition) o;
         return row == that.row && col == that.col;
     }
 
-
+    @Override
     public int hashCode() {
         return Objects.hash(row, col);
     }
-
 }
