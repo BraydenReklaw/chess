@@ -1,7 +1,9 @@
 package chess;
 
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Queue;
 
 /**
  * Represents a single chess piece
@@ -69,6 +71,15 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        PieceMovesCalculator moves = switch(getPieceType()) {
+            case KING -> new KingMoveCalculator();
+            case QUEEN -> new QueenMoveCalculator();
+            case BISHOP -> new BishopMoveCalculator();
+            case KNIGHT -> new KnightMoveCalculator();
+            case ROOK -> new RookMoveCalculator();
+            case PAWN -> new PawnMoveCalculator();
+        };
+        return moves.pieceMoves(board, position);
+        // throw new RuntimeException("Not implemented");
     }
 }
