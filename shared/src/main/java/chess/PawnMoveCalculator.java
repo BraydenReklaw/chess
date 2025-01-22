@@ -51,5 +51,3 @@ public class PawnMoveCalculator implements PieceMovesCalculator {
         return moves;
     }
 }
-
-// ChessPiece.PieceType.QUEEN
