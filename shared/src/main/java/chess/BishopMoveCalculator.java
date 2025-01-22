@@ -9,6 +9,7 @@ public class BishopMoveCalculator implements PieceMovesCalculator {
         Collection<ChessMove> moves = new ArrayList<>();
         int [][] possibleMoves = {
                 {1,1}, {1,-1}, {-1,1}, {-1,-1}
+                // up-right, down-right, down-left, up-left
         };
 
         for (int i = 0; i < possibleMoves.length; i++) {
