@@ -92,4 +92,14 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(cboard);
     }
+
+    public boolean isValidMove(int row, int col) {
+        if (row > 8 || col > 8) {
+            return false;
+        }
+        if (row <= 0 || col <= 0) {
+            return false;
+        }
+        return true;
+    }
 }
