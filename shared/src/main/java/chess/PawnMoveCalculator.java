@@ -34,7 +34,7 @@ public class PawnMoveCalculator implements PieceMovesCalculator {
                 promote = true;
             }
             // check if pawn has yet to take a move
-            if (row == 2 || row == 7) {
+            if ((row == 3 && possibleMoves ==possibleWhiteMoves) || (row == 6 && possibleMoves == possibleBlackMoves)) {
                 start = true;
             }
             // Non Promoting Pawns
@@ -54,7 +54,7 @@ public class PawnMoveCalculator implements PieceMovesCalculator {
                             ChessPosition first = new ChessPosition(row, col);
                             piece = board.getPiece(first);
                             if (piece == null) {
-                                moves.add(new ChessMove(myPosition, newPosition, null));
+                                moves.add(new ChessMove(myPosition, first, null));
                             }
                         }
                     }
@@ -71,11 +71,17 @@ public class PawnMoveCalculator implements PieceMovesCalculator {
                 if (board.isValidMove(row, col)) {
                     ChessPiece piece = board.getPiece(newPosition);
                     if (piece == null && i == 0) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
+                        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
+                        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK));
+                        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
                     }
                     if (i != 0 && piece != null) {
                         if (piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                            moves.add(new ChessMove(myPosition, newPosition, null));
+                            moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
+                            moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
+                            moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK));
+                            moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
                         }
                     }
                 }
