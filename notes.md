@@ -2,6 +2,9 @@
 
 Check out the example code for each of the sections
 
+programing exam - setup is identical to the first time setup. do it all again. make sure tests run (they will fail) before
+you start running honorlock. Pass/Fail - based on if 100% of tests pass
+
 ## Java Fundamentals
 
 Similar to C++. References, not pointers. Compiler vs interpreter : compilers define code instructions for a system and then go to the system, interpreters go to system first before defining code instructions. Compilers are fast but less portable (need multiple copies of the code for different platforms/systems) while interpreters are very portable. Java is a hybrid. code is compiled for a virtual machine (most common denominator for a machine) which is then further defined for each individual machine's required.
@@ -133,3 +136,26 @@ Interface - away of implementing pieceMoves. holds methods, but no bodies. Look 
 Note the slide examples and lecture videos
 
 reference equality vs object equality. References equal if referencing same object. object equality by default checks reference equality
+
+## Records
+
+records are immutable versions of classes, so if you want to change a variable, you need to create a method
+that returns a new instance with the new variables.
+
+## Exceptions
+
+abnormal conditions, not necessarily errors. Allow us to write code without handling all the error logic required.
+Errors are issues that no code can fix. Exceptions can be fixed with code
+
+try / catch block : try { code that may throw exception }catch(exception) {code that handles specified exception}
+
+Multi-catch -> allows catch to | multiple exceptions in one block
+
+Checked exceptions (Java only). Handle or Declare rules apply here
+
+finally - handles any code necessary to run but in risk of not running if an exception is thrown. Will always run
+regardless of thrown exceptions
+
+`throw new <exeption name>("error message")`
+
+You can create custom exception classes
