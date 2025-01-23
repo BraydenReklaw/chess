@@ -29,49 +29,57 @@ public class PawnMoveCalculator implements PieceMovesCalculator {
             ChessPosition newPosition = new ChessPosition(row, col);
             boolean promote = false;
             boolean start = false;
+            // check if pawn can promote
             if (row == 8 || row == 1) {
                 promote = true;
             }
+            // check if pawn has yet to take a move
             if (row == 2 || row == 7) {
                 start = true;
             }
+            // Non Promoting Pawns
             if (!promote) {
                 if (board.isValidMove(row, col)) {
                     ChessPiece piece = board.getPiece(newPosition);
                     if (piece == null && i == 0) {
                         moves.add(new ChessMove(myPosition, newPosition, null));
+                        // double move case
                         if (start) {
-                            // implement advance position here
-                            piece = board.getPiece(newPosition + );
-                            if (piece == null && i == 0) {
+                            if (possibleMoves == possibleWhiteMoves) {
+                                row += 1;
+                            }
+                            else {
+                                row -= 1;
+                            }
+                            ChessPosition first = new ChessPosition(row, col);
+                            piece = board.getPiece(first);
+                            if (piece == null) {
                                 moves.add(new ChessMove(myPosition, newPosition, null));
+                            }
                         }
                     }
-                    if (i != 0 && piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
+                    // attack case
+                    if (i != 0 && piece != null) {
+                        if (piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+                        }
                     }
                 }
             }
-
-
-//            if (i == 0) {
-//                // pawn forward moves from start space
-//                if (myPosition.getRow() == 2) {
-//                    if (board.getPiece(newPosition) == null) {
-//                        moves.add(new ChessMove(myPosition, newPosition, null));
-//                        ChessPosition pawnsprint = new ChessPosition(row + 1, col);
-//                        if (board.getPiece(pawnsprint) == null || (board.getPiece(pawnsprint).getTeamColor() != board.getPiece(myPosition).getTeamColor())) {
-//                            moves.add(new ChessMove(myPosition, pawnsprint, null));
-//                        }
-//                    }
-//                }
-//                else {
-//                    if (board.getPiece(newPosition) == null && !promote) {
-//                        moves.add(new ChessMove(myPosition, newPosition, null));
-//                    }
-//                }
-//            }
-
+            // Promotion cases
+            else {
+                if (board.isValidMove(row, col)) {
+                    ChessPiece piece = board.getPiece(newPosition);
+                    if (piece == null && i == 0) {
+                        moves.add(new ChessMove(myPosition, newPosition, null));
+                    }
+                    if (i != 0 && piece != null) {
+                        if (piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+                        }
+                    }
+                }
+            }
         }
         return moves;
     }
