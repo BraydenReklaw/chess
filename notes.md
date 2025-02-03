@@ -159,3 +159,36 @@ regardless of thrown exceptions
 `throw new <exeption name>("error message")`
 
 You can create custom exception classes
+
+## Collections
+
+only stores objects. used when regular arrays[] not sufficient. Made up of sub-interfaces:
+* list - index accessible
+* set - all elements unique `add(val), contains(val), remove(val)`
+* Queue - holds elements for processing `add(val), peek(), remove()`
+* Deque (deck) - Queue not fifo `addFirst(val), addLast(val)` as well as peek and remove first/last
+* Stack - deprecated (unusable now due to age and inefficiency). Use a Deque
+* Map - Python Dictionary of key-value pairs `put(key,val), get(key), keySet(), values()`
+
+`Set<String> words; for(String w : words) {}`
+
+### Equality checking
+
+by default, Objects.equals compares by identity (is this at same address as that?). 
+
+Comparable v Comparator
+
+## Copying Objects
+
+Used in chess game when determining checkmate by testing all available moves. 
+Clone the board, apply a move, check for mate, toss the board
+
+deep copy will recursively copy object and all its references
+
+you can only shallow copy immutable objects
+
+see CopyingObjects example code, especially for cloning a collection
+
+// when it comes to checking for check, upon making a move, calculate all possible moves again. 
+if any include the opponent King space, set check. Use this move collection to assist in determining
+if another intervening piece can block check //
