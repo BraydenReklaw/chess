@@ -71,14 +71,26 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece piece = gameBoard.getPiece(start);
+        if (piece == null) {
+            throw new InvalidMoveException("Invalid Move, no piece present");
+        }
+
+        if (piece.getTeamColor() != turnColor) {
+            throw new InvalidMoveException("Invalid Move, not your piece");
+        }
 
         Collection<ChessMove> moves = validMoves(start);
         if (!moves.contains(move)) {
             throw new InvalidMoveException("Invalid move");
         }
-        gameBoard.addPiece(end, piece);
-        gameBoard.addPiece(start, null);
 
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && move.getPromotionPiece() != null) {
+            ChessPiece promotion = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+            gameBoard.addPiece(end, promotion);
+        } else {
+            gameBoard.addPiece(end, piece);
+        }
+        gameBoard.addPiece(start, null);
         if (turnColor == TeamColor.WHITE){
             setTeamTurn(TeamColor.BLACK);
         } else {
