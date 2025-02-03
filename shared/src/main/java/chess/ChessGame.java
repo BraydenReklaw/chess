@@ -73,9 +73,39 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // Find the King
+        ChessPosition KingPos = findKing(teamColor);
+        if (KingPos == null) {
+            throw new RuntimeException("King not found");
+        }
+        TeamColor opponent = null;
+        if (teamColor == TeamColor.WHITE) {
+            opponent = TeamColor.BLACK;
+        } else {
+            opponent = TeamColor.WHITE;
+        }
+        Collection<ChessMove> allOpponentMoves = findMoves(opponent);
+
+        return false;
+        //throw new RuntimeException("Not implemented");
     }
 
+    private ChessPosition findKing(TeamColor teamColor) {
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                ChessPosition KingPos = new ChessPosition(r,c);
+                ChessPiece King = gameBoard.getPiece(KingPos);
+                if (King.getPieceType() == ChessPiece.PieceType.KING && King.getTeamColor() == teamColor) {
+                    return KingPos;
+                }
+            }
+        }
+        return null;
+    }
+    private Collection<ChessMove> findMoves(TeamColor opponent){
+        // need validmovesto be implemented first
+        return null;
+    }
     /**
      * Determines if the given team is in checkmate
      *
@@ -104,7 +134,7 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         this.gameBoard = board;
-        throw new RuntimeException("Not implemented");
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
