@@ -197,15 +197,18 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        ChessPosition KingPos = findKing(teamColor);
-        ChessPiece piece = gameBoard.getPiece(KingPos);
-        Collection<ChessMove> KingMoves = piece.pieceMoves(gameBoard, KingPos);
-        for (ChessMove move : KingMoves) {
-            if (isInCheck(teamColor)) {
-                return true;
+        for (int r = 1; r < 9; r++) {
+            for (int c = 1; c < 9; c++) {
+                ChessPosition pos = new ChessPosition(r,c);
+                ChessPiece piece = gameBoard.getPiece(pos);
+                if (piece != null && piece.getTeamColor() == teamColor){
+                    if (!validMoves(pos).isEmpty()) {
+                        return false;
+                    }
+                }
             }
         }
-        return false;
+        return true;
 //        throw new RuntimeException("Not implemented");
     }
 
