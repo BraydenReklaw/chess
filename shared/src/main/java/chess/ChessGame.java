@@ -106,21 +106,6 @@ public class ChessGame {
             throw new InvalidMoveException("Invalid move");
         }
 
-//        for (ChessMove possible_move : moves) {
-//            // Simulate the move
-//            ChessPosition endPosition = possible_move.getEndPosition();
-//            ChessPiece captured = gameBoard.getPiece(endPosition);
-//            gameBoard.addPiece(endPosition, piece);
-//            gameBoard.addPiece(start, null);
-//            // Check if the move results in king being/staying in check
-//            if (isInCheck(piece.getTeamColor())) {
-//                throw new InvalidMoveException("Invalid Move, your king is in check");
-//            }
-//            // Undo the simulated move
-//            gameBoard.addPiece(start, piece);
-//            gameBoard.addPiece(endPosition, captured);
-//        }
-
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN && move.getPromotionPiece() != null) {
             ChessPiece promotion = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
             gameBoard.addPiece(end, promotion);
