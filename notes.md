@@ -214,3 +214,5 @@ input and output streams are bytes binary. reader and writer convert to strings.
 
 Filter Input streams - allow the chaining of streams. allows for decompressing, decrypting, counting, etc.
 
+### Readers/Writers
+
