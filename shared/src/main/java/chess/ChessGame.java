@@ -56,24 +56,10 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = gameBoard.getPiece(startPosition);
         Collection<ChessMove> possible = piece.pieceMoves(gameBoard, startPosition);
-        Collection<ChessMove> valid = new ArrayList<>();
 
-        for (ChessMove move : possible) {
-            // Simulate the move
-            ChessPosition endPosition = move.getEndPosition();
-            ChessPiece captured = gameBoard.getPiece(endPosition);
-            gameBoard.addPiece(endPosition, piece);
-            gameBoard.addPiece(startPosition, null);
-            // Check if the move results in king being/staying in check
-            if (!isInCheck(piece.getTeamColor())) {
-                valid.add(move);
-            }
-            // Undo the simulated move
-            gameBoard.addPiece(startPosition, piece);
-            gameBoard.addPiece(endPosition, captured);
-        }
 
-        return valid;
+
+        return possible;
     }
 
     /**
@@ -99,7 +85,20 @@ public class ChessGame {
         if (!moves.contains(move)) {
             throw new InvalidMoveException("Invalid move");
         }
-
+        for (ChessMove possible_move : moves) {
+            // Simulate the move
+            ChessPosition endPosition = possible_move.getEndPosition();
+            ChessPiece captured = gameBoard.getPiece(endPosition);
+            gameBoard.addPiece(endPosition, piece);
+            gameBoard.addPiece(start, null);
+            // Check if the move results in king being/staying in check
+            if (isInCheck(piece.getTeamColor())) {
+                throw new InvalidMoveException("Invalid Move, your king is in check");
+            }
+            // Undo the simulated move
+            gameBoard.addPiece(start, piece);
+            gameBoard.addPiece(endPosition, captured);
+        }
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN && move.getPromotionPiece() != null) {
             ChessPiece promotion = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
             gameBoard.addPiece(end, promotion);
