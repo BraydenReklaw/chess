@@ -145,11 +145,11 @@ public class ChessGame {
     }
 
     private ChessPosition findKing(TeamColor teamColor) {
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
+        for (int r = 1; r < 9; r++) {
+            for (int c = 1; c < 9; c++) {
                 ChessPosition KingPos = new ChessPosition(r,c);
                 ChessPiece King = gameBoard.getPiece(KingPos);
-                if (King.getPieceType() == ChessPiece.PieceType.KING && King.getTeamColor() == teamColor) {
+                if (King != null && (King.getPieceType() == ChessPiece.PieceType.KING && King.getTeamColor() == teamColor)) {
                     return KingPos;
                 }
             }
@@ -158,8 +158,8 @@ public class ChessGame {
     }
     private Collection<ChessMove> findMoves(TeamColor opponent){
         Collection<ChessMove> moves = new ArrayList<>();
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
+        for (int r = 1; r < 9; r++) {
+            for (int c = 1; c < 9; c++) {
                 ChessPosition pos = new ChessPosition(r,c);
                 ChessPiece piece = gameBoard.getPiece(pos);
                 if (piece != null && piece.getTeamColor() == opponent){

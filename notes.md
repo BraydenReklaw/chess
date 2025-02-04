@@ -192,3 +192,25 @@ see CopyingObjects example code, especially for cloning a collection
 // when it comes to checking for check, upon making a move, calculate all possible moves again. 
 if any include the opponent King space, set check. Use this move collection to assist in determining
 if another intervening piece can block check //
+
+## I/O
+
+streams, scanner class (1 token at a time), files class, RandomAccessFile class
+
+### File Class
+
+This class can check a file's existence, create one, or delete one.
+
+`File file = new File("/use/MyFile.txt"); if(file.exists());`
+
+### Streams
+
+input and output streams are bytes binary. reader and writer convert to strings. 
+* FileInputStream
+* PipedInputStream
+* URLConnection.getInputStream() (phase 3)
+* HttpExchange.getRequestBody()
+* ResultSet.getBinaryStream(int col_index) - reading bytes off a database
+
+Filter Input streams - allow the chaining of streams. allows for decompressing, decrypting, counting, etc.
+
