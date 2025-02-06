@@ -214,5 +214,32 @@ input and output streams are bytes binary. reader and writer convert to strings.
 
 Filter Input streams - allow the chaining of streams. allows for decompressing, decrypting, counting, etc.
 
-### Readers/Writers
+## JSON and Serialization
+
+Parseble string represenation that supports objects, arrays, numbers, strings, boolean, null.
+
+{"name":"Bob","age":32} - object. [] array. See cd_catalogue.json example
+
+Parsers:
+*DOM - convert object to tree structure Document-Object-model. (think HTML and whatnot). traverse the tree to get data
+*Stream - Tokenizer returning 1 token at a time from JSON data file
+*Serializers/Deserializers - use library to conert JSON to java object. Use this in Project. use [this](https://github.com/softwareconstruction240/softwareconstruction/blob/main/instruction/json/json.md) Look at the sample code, especially parser/json/simpleobject.java
+
+`private List<CD> parse(File file) throws IOException {try(FileReader fileReader = new FileReader(file); BufferedReader bufferedReader = new BufferedReader(fileReader)) {Gson gson = new Gson();
+            Catalog catalog = gson.fromJson(bufferedReader, Catalog.class);
+            return catalog.getCds();
+        }
+    }`
+
+you'll need to make GSON available to your project. see instructions in slides
+
+[Generators](https://github.com/softwareconstruction240/softwareconstruction/blob/main/instruction/json/example-code/generator/json/JsonSimpleObjectSerializationExample.java) convert from object to string. 
+
+## Phase 2:
+
+create a sequence diagram of phase 3. look especially at the sample diagram for Register and the starter diagram.
+
+## Phase 3
+
+handlers require knowledge of generics and lambdas
 
