@@ -237,9 +237,60 @@ you'll need to make GSON available to your project. see instructions in slides
 
 ## Phase 2:
 
-create a sequence diagram of phase 3. look especially at the sample diagram for Register and the starter diagram.
+create a sequence diagram of phase 3. look especially at the sample diagram for Register and the starter diagram. Focus on the "happy path". if you can understand the error-less path, then great
+
+Chess Client -> web -> Chess Server  (HTTP -> request, <- HTTP response). Server has the site and the API. Console Client will access the API and is how the game will actually be played
+
+### Software Design Principles
+
+*Single Responsibility Principle (SRP) - classes do only what they are intended to do, nothing more
+*Non-duplicated code
+*Encapsulation/Information Hiding - what you can hide you can change. Make things private when you can.
+
+### Server
+
+User records, Auth token - when you login, a random number is generated and tied to your credentials. while using the site, if authorization is required and you have the token, you need not log in again, Game records keep track of users on the game and references the ChessGame class.
+
+Packages: Record classes (User, Authtoken, Game/Gamedata), Data access (Data Access Object) classes (UserDao, AuthTokenDao, GameDao) (will initiallily be internally stored), Service Classes (business logic) (User(register, login, logout), Game(create, join, list), Clear), Request/Result
+
+The request objects are JSON strings that are GSON parsed. RegisterResult register(RegisterRequest r).
+
+The main server class points to HTTP Handlers which point to the Request/Result and Service classes. Handlers will handle string/object JSON conversions. Look there for JSON issues. Look at Service classes for business logic errors
+
+Clear function does not need a request class (it needs no extra data given to it to clear data)
+
+IP addresses are tied to servers/machines, but there are muliple processes running on the machine that are willing to talk to any import, so ports are assigned to each process. IP and port are like phone number and extension.
+
+## HTTP
+
+### GET
+
+request data
+
+URL: protocol, domain address, port number, path `https://www.google.com:443/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png`
+
+method: `GET <path> HTTP/1.1 (http version)\n Accept: < >\n Accept-Endoding < >\n User-Agent <accepted browsers>`
+The Accept lines are Headers and specify accepted meta data
+The Response to the above GET would be the HTTP version, status code, Reason Phrase (OK, success, fail, etc.), the header information, an empty line, and then the response body containing what was requested.
+
+[API call](https://docs.google.com/presentation/d/1VECGwiLgXd541yq9BWVSYiphHAXHG0ca/edit#slide=id.p1): (Follow link for slides and sample code)
+
+URL: `http://macho.cs.byu.edu:7979/event/1234`
+
+`GET /event/1234 HTTP/1.1 \n Authorization: 1gh2jdkj37` the response body would be a JSON String containing the event data
+
+### POST
+
+Give data to the server to do something
+
+Post will replace GET with POST and also include a request body after a newline (we will send JSON strings). Response will be the same as above.
+
+### cURL
+
+commandline tool to experiment with HTTP endpoints and debug. Checkout the slides
 
 ## Phase 3
 
 handlers require knowledge of generics and lambdas
+
 
