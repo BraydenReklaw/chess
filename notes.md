@@ -293,4 +293,48 @@ commandline tool to experiment with HTTP endpoints and debug. Checkout the slide
 
 handlers require knowledge of generics and lambdas
 
+## Quality Code & Style
 
+### Style
+
+Cohesion - methods in a class should do similar/related things. Names should properly describe the function of the method.
+
+A method without a return should be a verb/verb phrase describing what is being done. A returning method should be a verb/verb phrase or what it returns. Avoid meaningless verbs or stuttering (person.copyPerson(Person person) vs person.clone). 
+
+Establish naming conventions/methods for consistency
+
+classes -> things. Methods -> Algorithms 
+
+Algorithm Decomposition: long/complex methods can be hard to understand. Break apart into sub methods and sub-sub methods until the problem is trivial to solve. This allows recallable methods which cuts down on
+duplicated code.
+
+Comments: Well named and readable code is self-commenting. 
+
+Avoid Code Duplication: callable code is easier to debug than duplicated code.
+
+Deep Nesting: avoid nesting code within 3-4+ levels of nesting in while, for, if, etc. Do this by calling out to other methods (Probably should address this in PawnMoveCalculator)
+
+Parameters: in, in-out, out. The parameter is used but not returned. The parameter is used, potentially changed and result is returned. The parameter passed in does not matter, only the result returned.
+
+Initializing: Initialize variables when they are declared and close to where they are used. Always check the need to re-initialize a variable (like counters in a loop)
+
+### Layout
+
+Consistency in style is paramount in Human Readability. Follow standards when they exist, then follow your own.
+
+White space (spaces, tabs, lines) enhances readability. Indentation directs logic structure.
+
+Logic operators should be separated by lines `if ( a == b || \n a == c) {}` or collapsed into a method call. `if (isB(a) || isC(a)) {}` or `if (isA(a)) {} boolean isA(char a) {return (isB(a) || isC(a))}`
+
+line wrap between 80-100 characters. watch readability standards
+
+Psuedo-code: capture the overall logic, the what, before getting lost in the how of syntax. A Non programmer should be able to get what you are trying to do
+
+Variable names: be careful of too long `NumberOfPeopleAtTheParty` or too short `n`. Short variables as loop control variables are fine, as well as `temp` and `x y z` in the instance of naturally short named variables as seen in math. 
+Camel-case : `WebCrawler, documentMap` `Web_crawler, document_map`. First char of class name : uppercase. First char of method name: lowercase. First char of variable name: lowercase
+
+abreviate only when you need to. Computer -> cmptr, Calculate -> calc. Be consistent
+
+### Style Checking
+
+some IDEs can reformat code to a certain standard. Checkstyle, Prettier
