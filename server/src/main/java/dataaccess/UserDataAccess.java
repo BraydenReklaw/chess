@@ -1,7 +1,10 @@
 package dataaccess;
 
+import model.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import model.*;
 
 public class UserDataAccess {
     private List<UserData> users = new ArrayList<>();
@@ -9,7 +12,7 @@ public class UserDataAccess {
 
     public UserData getUser(String username) {
         for (UserData user : users) {
-            if (user.getUsername() == username) {
+            if (user.username() == username) {
                 return user;
             }
         }

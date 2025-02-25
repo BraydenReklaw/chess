@@ -1,7 +1,7 @@
 package server;
 
 import dataaccess.*;
-
+import model.*;
 import java.util.UUID;
 
 public class UserService {
@@ -23,7 +23,7 @@ public class UserService {
 
         dataAccess.createAuth(authData);
 
-        return new UserResponse(request.getUsername(), authData.getAuthToken());
+        return new UserResponse(request.getUsername(), authData.authToken());
     }
 
     private String generateAuthToken() {
