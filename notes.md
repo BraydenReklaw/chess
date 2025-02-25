@@ -293,4 +293,76 @@ commandline tool to experiment with HTTP endpoints and debug. Checkout the slide
 
 handlers require knowledge of generics and lambdas
 
+## Quality Code & Style
 
+### Style
+
+Cohesion - methods in a class should do similar/related things. Names should properly describe the function of the method.
+
+A method without a return should be a verb/verb phrase describing what is being done. A returning method should be a verb/verb phrase or what it returns. Avoid meaningless verbs or stuttering (person.copyPerson(Person person) vs person.clone). 
+
+Establish naming conventions/methods for consistency
+
+classes -> things. Methods -> Algorithms 
+
+Algorithm Decomposition: long/complex methods can be hard to understand. Break apart into sub methods and sub-sub methods until the problem is trivial to solve. This allows recallable methods which cuts down on
+duplicated code.
+
+Comments: Well named and readable code is self-commenting. 
+
+Avoid Code Duplication: callable code is easier to debug than duplicated code.
+
+Deep Nesting: avoid nesting code within 3-4+ levels of nesting in while, for, if, etc. Do this by calling out to other methods (Probably should address this in PawnMoveCalculator)
+
+Parameters: in, in-out, out. The parameter is used but not returned. The parameter is used, potentially changed and result is returned. The parameter passed in does not matter, only the result returned.
+
+Initializing: Initialize variables when they are declared and close to where they are used. Always check the need to re-initialize a variable (like counters in a loop)
+
+### Layout
+
+Consistency in style is paramount in Human Readability. Follow standards when they exist, then follow your own.
+
+White space (spaces, tabs, lines) enhances readability. Indentation directs logic structure.
+
+Logic operators should be separated by lines `if ( a == b || \n a == c) {}` or collapsed into a method call. `if (isB(a) || isC(a)) {}` or `if (isA(a)) {} boolean isA(char a) {return (isB(a) || isC(a))}`
+
+line wrap between 80-100 characters. watch readability standards
+
+Psuedo-code: capture the overall logic, the what, before getting lost in the how of syntax. A Non programmer should be able to get what you are trying to do
+
+Variable names: be careful of too long `NumberOfPeopleAtTheParty` or too short `n`. Short variables as loop control variables are fine, as well as `temp` and `x y z` in the instance of naturally short named variables as seen in math. 
+Camel-case : `WebCrawler, documentMap` `Web_crawler, document_map`. First char of class name : uppercase. First char of method name: lowercase. First char of variable name: lowercase
+
+abreviate only when you need to. Computer -> cmptr, Calculate -> calc. Be consistent
+
+### Style Checking
+
+some IDEs can reformat code to a certain standard. Checkstyle, Prettier
+
+## Unit Testing
+
+individual parts need to be verified before being integrated with other parts. If the system breaks after a part is added, then you know where the issue is. Untested code is broken code. "Unit" is a generic term for the smaller pieces of a program, most generally a class. Unit testing tests a unit in isolation.
+
+Unit Tests, Integration tests, End-to-End tests. Faster to slower, less integration to more integration
+
+let Intellij generate getters and setters for you
+
+### Unit Tests
+
+create, call, verify. Actual results vs Expected results. Automated testing = frequent testing which is best. Fast, Cohesive, Independent, Unique
+
+test driver required - run, add and report tests
+
+### JUnit Testing Framework
+
+`@Test` `@BeforeEach` or `@BeforeAll` indicates code that is run before each test that is run. `@AfterEach/@AfterAll` runs after any test is run. Implement tests with `Assertions.assert*`
+
+The class example WordExtractor will take a string and return each word in it. WordExtractorTest is the unit tests. Should probably ensure JUnit 5 or later is used
+
+### Code Coverage
+
+How do I know I've written enough tests? standard is 90% of code is run during testing. Doesn't affirm you tested every line, but un-run code is definitely untested. 
+
+Coverages: Line, Statement, Branch (do you test the true and false case of each `if` statement?), Function
+
+in intelliji, right click test, `more run/debug`, `run with coverage`. see slides for more examples of how to access
