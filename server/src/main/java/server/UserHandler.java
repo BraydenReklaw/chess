@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import spark.Route;
 import spark.Request;
 import spark.Response;
+import dataaccess.*;
 
 
 public class UserHandler {
@@ -14,10 +15,21 @@ public class UserHandler {
     }
 
     public Route register = (Request req, Response res) -> {
-        UserRequest request = new Gson().fromJson(req.body(), UserRequest.class);
-//      success case
-        UserResponse response = userService.register(request);
-        res.status(200);
-        return new Gson().toJson(response);
+        try {
+            UserRequest request = new Gson().fromJson(req.body(), UserRequest.class);
+            UserResponse response = userService.register(request);
+            res.status(200);
+            return new Gson().toJson(response);
+        } catch (DataAccessException e) {
+//            Only a placeholder
+            return null;
+        }
+//        catch (DataAccessException e) {
+//            res.status(400);
+//            return new Gson().toJson(new ErrorResponse(e.getMessage()));
+//        } catch (Exception e) {
+//            res.status(500);
+//            return new Gson().toJson(new ErrorResponse("Internal Server Error"));
+//        }
     };
 }
