@@ -4,6 +4,9 @@ import spark.*;
 
 public class Server {
 
+    public Server() {
+    }
+
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
