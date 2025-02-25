@@ -5,17 +5,14 @@ import dataaccess.*;
 
 public class Server {
 
-    public Server() {
-        UserDataAccess dataAccess = new UserDataAccess();
-        UserService userService = new UserService(dataAccess);
-        UserHandler userHandler = new UserHandler(userService);
-    }
-
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
+        UserDataAccess dataAccess = new UserDataAccess();
+        UserService userService = new UserService(dataAccess);
+        UserHandler userHandler = new UserHandler(userService);
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", userHandler.register);
 
