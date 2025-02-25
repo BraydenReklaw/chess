@@ -1,22 +1,20 @@
 package server;
 
 public class UserResponse {
-    public String getUsername() {
-        return username;
+    private String username;
+    private String authToken;
+
+    public UserResponse(String username, String authToken) {
+        this.username = username;
+        this.authToken = authToken;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUsername() {
+        return username;
     }
 
     public String getAuthToken() {
         return authToken;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
-    }
-
-    private String username;
-    private String authToken;
 }

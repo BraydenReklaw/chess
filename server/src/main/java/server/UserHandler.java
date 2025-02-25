@@ -19,5 +19,5 @@ public class UserHandler {
         UserResponse response = userService.register(request);
         res.status(200);
         return new Gson().toJson(response);
-    }
+    };
 }
