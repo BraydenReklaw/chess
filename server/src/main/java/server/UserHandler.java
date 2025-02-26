@@ -15,8 +15,22 @@ public class UserHandler {
 
     public Object register(Request req, Response res) throws DataAccessException {
         UserData userData = new Gson().fromJson(req.body(), UserData.class);
-        AuthData authData = userService.register(userData);
-        res.status(200);
-        return new Gson().toJson(authData);
+        if (userData == null || userData.username() == null || userData.password()== null || userData.email() == null) {
+            res.status(400);
+            return new Gson().toJson(new DataAccessException("Error: bad request"));
+        }
+        try {
+            AuthData authData = userService.register(userData);
+            res.status(200);
+            return new Gson().toJson(authData);
+        } catch (DataAccessException e){
+            if (e.getMessage().equals("already taken")) {
+                res.status(403);
+                return new Gson().toJson(new DataAccessException("Error: already taken"));
+            } else {
+                res.status(500);
+                return new Gson().toJson(new DataAccessException("Error: " + e.getMessage()));
+            }
+        }
     }
 }

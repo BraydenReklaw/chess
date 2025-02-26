@@ -13,14 +13,14 @@ public class UserService {
     }
 
     public AuthData register(UserData userData) throws DataAccessException {
-        UserData user = dataAccess.getUser(userData.getUsername());
+        UserData user = dataAccess.getUser(userData.username());
         if (user != null) {
-            throw new DataAccessException("User Already Exists");
+            throw new DataAccessException("already taken");
         }
         dataAccess.createUser(userData);
 
         String authToken = UUID.randomUUID().toString();
-        AuthData authData = new AuthData(authToken, userData.getUsername());
+        AuthData authData = new AuthData(authToken, userData.username());
         dataAccess.createAuth(authData);
 
         return authData;
