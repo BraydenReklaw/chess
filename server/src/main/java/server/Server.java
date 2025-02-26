@@ -2,6 +2,7 @@ package server;
 
 import spark.*;
 import dataaccess.*;
+import service.*;
 
 public class Server {
 
@@ -14,7 +15,7 @@ public class Server {
         UserService userService = new UserService(dataAccess);
         UserHandler userHandler = new UserHandler(userService);
         // Register your endpoints and handle exceptions here.
-        Spark.post("/user", userHandler.register);
+        Spark.post("/user", userHandler::register);
 
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
