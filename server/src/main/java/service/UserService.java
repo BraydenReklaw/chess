@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public class UserService {
     private UserDataAccess dataAccess;
+    private AuthDataAccess authAccess;
 
     public UserService(UserDataAccess dataAccess) {
         this.dataAccess = dataAccess;
@@ -21,7 +22,7 @@ public class UserService {
 
         String authToken = UUID.randomUUID().toString();
         AuthData authData = new AuthData(authToken, userData.username());
-        dataAccess.createAuth(authData);
+        authAccess.createAuth(authData);
 
         return authData;
     }
