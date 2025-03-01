@@ -9,7 +9,7 @@ public class UserService {
     private UserDataAccess dataAccess;
     private AuthDataAccess authAccess;
 
-    public UserService(UserDataAccess dataAccess) {
+    public UserService(UserDataAccess dataAccess, AuthDataAccess authAccess) {
         this.dataAccess = dataAccess;
         this.authAccess = authAccess;
     }

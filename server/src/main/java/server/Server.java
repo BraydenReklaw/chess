@@ -7,7 +7,7 @@ import service.*;
 public class Server {
     UserDataAccess userDataAccess = new UserDataAccess();
     AuthDataAccess authDataAccess = new AuthDataAccess();
-    UserService userService = new UserService(userDataAccess);
+    UserService userService = new UserService(userDataAccess, authDataAccess);
     ClearService clearService = new ClearService(userDataAccess, authDataAccess);
     UserHandler userHandler = new UserHandler(userService);
     ClearHandler clearHandler = new ClearHandler(clearService);
