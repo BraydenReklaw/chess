@@ -17,7 +17,7 @@ public class UserHandler {
         UserData userData = new Gson().fromJson(req.body(), UserData.class);
         if (userData == null || userData.username() == null || userData.password()== null || userData.email() == null) {
             res.status(400);
-            return new Gson().toJson(new DataAccessException("Error: bad request"));
+            return "{ \"message\": \"Error: bad request\" }";
         }
         try {
             AuthData authData = userService.register(userData);
@@ -26,7 +26,8 @@ public class UserHandler {
         } catch (DataAccessException e){
             if (e.getMessage().equals("already taken")) {
                 res.status(403);
-                return new Gson().toJson(new DataAccessException("Error: already taken"));
+//                return new Gson().toJson(new DataAccessException("Error: already taken"));
+                return "{ \"message\": \"Error: already taken\" }";
             } else {
                 res.status(500);
                 return new Gson().toJson(new DataAccessException("Error: " + e.getMessage()));
