@@ -11,6 +11,7 @@ public class UserService {
 
     public UserService(UserDataAccess dataAccess) {
         this.dataAccess = dataAccess;
+        this.authAccess = authAccess;
     }
 
     public AuthData register(UserData userData) throws DataAccessException {

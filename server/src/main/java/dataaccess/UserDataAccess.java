@@ -8,6 +8,10 @@ import java.util.List;
 public class UserDataAccess {
     private List<UserData> users = new ArrayList<>();
 
+    public UserDataAccess() {
+        this.users = users;
+    }
+
     public UserData getUser(String username) {
         for (UserData user : users) {
             if (user.username().equals(username)) {
@@ -19,5 +23,11 @@ public class UserDataAccess {
 
     public void createUser(UserData userData) {
         users.add(userData);
+    }
+
+
+
+    public void clearAll() {
+        users.clear();
     }
 }

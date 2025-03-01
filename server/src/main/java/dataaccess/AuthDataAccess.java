@@ -8,6 +8,10 @@ import java.util.List;
 public class AuthDataAccess {
     private List<AuthData> auths = new ArrayList<>();
 
+    public AuthDataAccess() {
+        this.auths = auths;
+    }
+
     public void createAuth(AuthData authData) {
         auths.add(authData);
     }
@@ -15,5 +19,4 @@ public class AuthDataAccess {
     public void clearAll() {
         auths.clear();
     }
-}
 }
