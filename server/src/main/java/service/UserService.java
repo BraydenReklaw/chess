@@ -27,4 +27,17 @@ public class UserService {
 
         return authData;
     }
+
+    public AuthData login(UserData userData) throws DataAccessException {
+        UserData user = dataAccess.getUser(userData.username());
+        if (user == null || !user.password().equals(userData.password())) {
+            throw new DataAccessException("Invalid Username or Password");
+        }
+
+        String authToken = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authToken, userData.username());
+        authAccess.createAuth(authData);
+
+        return authData;
+    }
 }

@@ -25,8 +25,6 @@ public class UserDataAccess {
         users.add(userData);
     }
 
-
-
     public void clearAll() {
         users.clear();
     }
