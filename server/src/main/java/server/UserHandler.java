@@ -50,7 +50,8 @@ public class UserHandler {
         }
     }
     public Object logout(Request req, Response res) throws DataAccessException {
-        String authToken = req.headers("authorized");
+        System.out.println("Headers: " + req.headers());
+        String authToken = req.headers("authorization");
         try {
             userService.logout(authToken);
             res.status(200);
