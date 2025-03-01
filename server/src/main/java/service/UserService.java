@@ -31,7 +31,7 @@ public class UserService {
     public AuthData login(UserData userData) throws DataAccessException {
         UserData user = dataAccess.getUser(userData.username());
         if (user == null || !user.password().equals(userData.password())) {
-            throw new DataAccessException("Invalid Username or Password");
+            throw new DataAccessException("unauthorized");
         }
 
         String authToken = UUID.randomUUID().toString();
