@@ -6,7 +6,10 @@ import model.GameData;
 import service.GameService;
 import spark.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameHandler {
     private GameService gameService;
@@ -20,7 +23,10 @@ public class GameHandler {
         try {
             Collection<GameData> games = gameService.list(authToken);
             res.status(200);
-            return new Gson().toJson(games);
+            // The Json wants an object, not an array
+            Map<String, Collection<GameData>> gameMap = new HashMap<>();
+            gameMap.put("games", games);
+            return new Gson().toJson(gameMap);
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
                 res.status(401);
