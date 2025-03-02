@@ -71,22 +71,23 @@ public class PawnMoveCalculator implements PieceMovesCalculator {
                 if (board.isValidMove(row, col)) {
                     ChessPiece piece = board.getPiece(newPosition);
                     if (piece == null && i == 0) {
-                        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
+                        promotionMoves(moves,myPosition, newPosition);
                     }
                     if (i != 0 && piece != null) {
                         if (piece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                            moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
-                            moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
+                            promotionMoves(moves,myPosition, newPosition);
                         }
                     }
                 }
             }
         }
         return moves;
+    }
+
+    public void promotionMoves(Collection<ChessMove> moves, ChessPosition myPosition, ChessPosition newPosition) {
+        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
+        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
+        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK));
+        moves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
     }
 }
