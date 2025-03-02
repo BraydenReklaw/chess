@@ -24,6 +24,7 @@ public class GameDataAccess {
         int gameID = generateGameID();
         ChessGame game = new ChessGame();
         GameData gameData = new GameData(gameID, "", "", gameName, game);
+        games.add(gameData);
         return gameData;
     }
 

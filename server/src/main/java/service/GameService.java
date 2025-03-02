@@ -22,12 +22,12 @@ public class GameService {
         return gameDataAccess.listAll();
     }
 
-    public int create(String authToken, String gameName) throws DataAccessException {
+    public String create(String authToken, String gameName) throws DataAccessException {
         AuthData authData = authDataAccess.getAuth(authToken);
         if (authData == null) {
             throw new DataAccessException("unauthorized");
         }
         GameData gameData = gameDataAccess.createGame(gameName);
-        return gameData.gameID();
+        return String.valueOf(gameData.gameID());
     }
 }

@@ -38,11 +38,18 @@ public class GameHandler {
 
     public Object create(Request req, Response res) {
         String authToken = req.headers("authorization");
-        GameData gameName = new Gson().fromJson(req.body(), GameData.class);
+        GameData gameData = new Gson().fromJson(req.body(), GameData.class);
+        String gameName = gameData.gameName();
+        if (gameName == null) {
+            res.status(400);
+            return "{ \"message\": \"Error: bad request\" }";
+        }
         try {
-            int gameID = gameService.create(authToken, gameName);
+            String gameID = gameService.create(authToken, gameName);
             res.status(200);
-            return new Gson().toJson(gameID);
+            Map<String, String> wrappedGameID = new HashMap<>();
+            wrappedGameID.put("gameID", gameID);
+            return new Gson().toJson(wrappedGameID);
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
                 res.status(401);
