@@ -77,4 +77,8 @@ public class GameDataAccess {
         }
 
     }
+
+    public boolean isEmpty() {
+        return games.isEmpty();
+    }
 }

@@ -28,4 +28,8 @@ public class UserDataAccess {
     public void clearAll() {
         users.clear();
     }
+
+    public boolean isEmpty() {
+        return users.isEmpty();
+    }
 }

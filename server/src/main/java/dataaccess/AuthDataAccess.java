@@ -32,4 +32,8 @@ public class AuthDataAccess {
     public void clearAll() {
         auths.clear();
     }
+
+    public boolean isEmpty() {
+        return auths.isEmpty();
+    }
 }
