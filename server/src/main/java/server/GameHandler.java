@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dataaccess.DataAccessException;
 import model.GameData;
-import model.UserData;
 import service.GameService;
 import spark.*;
 
@@ -29,11 +28,9 @@ public class GameHandler {
             return new Gson().toJson(gameMap);
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
-                res.status(401);
-                return "{ \"message\": \"Error: unauthorized\" }";
+                return ResponseHandler.handleResponse(res, 401, e.getMessage());
             } else {
-                res.status(500);
-                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+                return ResponseHandler.handleResponse(res, 500, e.getMessage());
             }
         }
     }
@@ -43,8 +40,7 @@ public class GameHandler {
         GameData gameData = new Gson().fromJson(req.body(), GameData.class);
         String gameName = gameData.gameName();
         if (gameName == null) {
-            res.status(400);
-            return "{ \"message\": \"Error: bad request\" }";
+            return ResponseHandler.handleResponse(res, 400, "bad request");
         }
         try {
             String gameID = gameService.create(authToken, gameName);
@@ -54,11 +50,9 @@ public class GameHandler {
             return new Gson().toJson(wrappedGameID);
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
-                res.status(401);
-                return "{ \"message\": \"Error: unauthorized\" }";
+                return ResponseHandler.handleResponse(res, 401, e.getMessage());
             } else {
-                res.status(500);
-                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+                return ResponseHandler.handleResponse(res, 500, e.getMessage());
             }
         }
     }
@@ -69,37 +63,30 @@ public class GameHandler {
         String playerColor = jsonObject.has("playerColor") ?
                 jsonObject.get("playerColor").getAsString() : null;
         jsonObject.remove("playerColor");
+
         GameData gameData = new Gson().fromJson(req.body(), GameData.class);
+
         Collection<String> playerColors = new ArrayList<>();
         playerColors.add("WHITE");
         playerColors.add("BLACK");
+
         if (playerColor == null || playerColor.isEmpty()) {
-            res.status(400);
-            return "{ \"message\": \"Error: bad request\" }";
+            return ResponseHandler.handleResponse(res, 400, "bad request");
         } else if (String.valueOf(gameData.gameID()) == null) {
-            res.status(400);
-            return "{ \"message\": \"Error: bad request\" }";
+            return ResponseHandler.handleResponse(res, 400, "bad request");
         } else if (!playerColors.contains(playerColor)) {
-            res.status(400);
-            return "{ \"message\": \"Error: bad request\" }";
+            return ResponseHandler.handleResponse(res, 400, "bad request");
         }
         try {
             gameService.join(authToken, gameData, playerColor);
             res.status(200);
             return "{}";
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("unauthorized")) {
-                res.status(401);
-                return "{ \"message\": \"Error: unauthorized\" }";
-            } else if (e.getMessage().equals("taken")){
-                res.status(403);
-                return "{ \"message\": \"Error: already taken\" }";
-            } else if (e.getMessage().equals("no game")) {
-                res.status(400);
-                return "{ \"message\": \"Error: bad request\" }";
-            } else {
-                res.status(500);
-                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            switch (e.getMessage()) {
+                case "unauthorized": return ResponseHandler.handleResponse(res, 401, e.getMessage());
+                case "taken": return ResponseHandler.handleResponse(res, 403, "already taken");
+                case "no game": return ResponseHandler.handleResponse(res, 400, "bad request");
+                default: return ResponseHandler.handleResponse(res, 500, e.getMessage());
             }
         }
     }

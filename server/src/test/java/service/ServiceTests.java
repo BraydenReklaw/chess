@@ -5,7 +5,6 @@ import model.*;
 import org.junit.jupiter.api.*;
 import dataaccess.*;
 
-import javax.xml.crypto.Data;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -18,7 +17,6 @@ public class ServiceTests {
     private GameService gameService;
     private UserData testUser1;
     private AuthData testAuth1;
-    private GameData testGame1;
 
 
     @BeforeEach
