@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import dataaccess.DataAccessException;
 import model.GameData;
 import model.UserData;
@@ -55,6 +57,43 @@ public class GameHandler {
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
             } else {
+                res.status(500);
+                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            }
+        }
+    }
+
+    public Object join(Request req, Response res) {
+        String authToken = req.headers("authorization");
+        JsonObject jsonObject = JsonParser.parseString(req.body()).getAsJsonObject();
+        String playerColor = jsonObject.get("playerColor").getAsString();
+        jsonObject.remove("playerColor");
+        GameData gameData = new Gson().fromJson(req.body(), GameData.class);
+        Collection<String> playerColors = new ArrayList<>();
+        playerColors.add("WHITE");
+        playerColors.add("BLACK");
+        if (playerColor == null || playerColor.isEmpty()) {
+            res.status(400);
+            return "{ \"message\": \"Error: bad request\" }";
+        } else if (String.valueOf(gameData.gameID()) == null) {
+            res.status(400);
+            return "{ \"message\": \"Error: bad request\" }";
+        } else if (!playerColors.contains(playerColor)) {
+            res.status(400);
+            return "{ \"message\": \"Error: bad request\" }";
+        }
+        try {
+            gameService.join(authToken, gameData, playerColor);
+            res.status(200);
+            return "{}";
+        } catch (DataAccessException e) {
+            if (e.getMessage().equals("unauthorized")) {
+                res.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            } else if (e.getMessage().equals("taken")){
+                res.status(403);
+                return "{ \"message\": \"Error: already taken\" }";
+            }{
                 res.status(500);
                 return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
             }

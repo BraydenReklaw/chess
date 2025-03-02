@@ -1,7 +1,9 @@
 package dataaccess;
 
 import chess.ChessGame;
+import model.AuthData;
 import model.GameData;
+import model.UserData;
 
 import java.util.*;
 
@@ -26,6 +28,31 @@ public class GameDataAccess {
         GameData gameData = new GameData(gameID, "", "", gameName, game);
         games.add(gameData);
         return gameData;
+    }
+
+    public GameData getGame(int gameID) {
+        for (GameData game : games) {
+            if (game.gameID() == gameID) {
+                return game;
+            }
+        }
+        return null;
+    }
+
+    public void updateGame(AuthData authData, String playerColor, GameData gameData) {
+        if (playerColor.equals("WHITE")) {
+            GameData game = getGame(gameData.gameID());
+            GameData updatedGame = new GameData(game.gameID(), authData.username(), game.blackUsername(),
+                    game.gameName(), game.game());
+            games.remove(game);
+            games.add(updatedGame);
+        } else {
+            GameData game = getGame(gameData.gameID());
+            GameData updatedGame = new GameData(game.gameID(), game.whiteUsername(), authData.username(),
+                    game.gameName(), game.game());
+            games.remove(game);
+            games.add(updatedGame);
+        }
     }
 
     public int generateGameID() {
