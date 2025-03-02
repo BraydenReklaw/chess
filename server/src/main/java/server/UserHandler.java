@@ -38,11 +38,7 @@ public class UserHandler {
             res.status(200);
             return new Gson().toJson(authData);
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("unauthorized")) {
-                return ResponseHandler.handleResponse(res, 401, e.getMessage());
-            } else {
-                return ResponseHandler.handleResponse(res, 500, e.getMessage());
-            }
+            return UnauthorizedHandler.unauthorizedError(e, res);
         }
     }
 
@@ -53,11 +49,7 @@ public class UserHandler {
             res.status(200);
             return "{}";
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("unauthorized")) {
-                return ResponseHandler.handleResponse(res, 401, e.getMessage());
-            } else {
-                return ResponseHandler.handleResponse(res, 500, e.getMessage());
-            }
+            return UnauthorizedHandler.unauthorizedError(e, res);
         }
     }
 

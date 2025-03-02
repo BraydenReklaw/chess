@@ -27,11 +27,7 @@ public class GameHandler {
             gameMap.put("games", games);
             return new Gson().toJson(gameMap);
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("unauthorized")) {
-                return ResponseHandler.handleResponse(res, 401, e.getMessage());
-            } else {
-                return ResponseHandler.handleResponse(res, 500, e.getMessage());
-            }
+            return UnauthorizedHandler.unauthorizedError(e, res);
         }
     }
 
@@ -49,11 +45,7 @@ public class GameHandler {
             wrappedGameID.put("gameID", gameID);
             return new Gson().toJson(wrappedGameID);
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("unauthorized")) {
-                return ResponseHandler.handleResponse(res, 401, e.getMessage());
-            } else {
-                return ResponseHandler.handleResponse(res, 500, e.getMessage());
-            }
+            return UnauthorizedHandler.unauthorizedError(e, res);
         }
     }
 
