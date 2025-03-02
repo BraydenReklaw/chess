@@ -130,8 +130,8 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         // Find the King
-        ChessPosition KingPos = findKing(teamColor);
-        if (KingPos == null) {
+        ChessPosition kingPos = findKing(teamColor);
+        if (kingPos == null) {
             throw new RuntimeException("King not found");
         }
         TeamColor opponent;
@@ -142,7 +142,7 @@ public class ChessGame {
         }
         Collection<ChessMove> allOpponentMoves = findMoves(opponent);
         for (ChessMove move : allOpponentMoves) {
-            if (move.getEndPosition().equals(KingPos)) {
+            if (move.getEndPosition().equals(kingPos)) {
                 return true;
             }
         }
@@ -153,10 +153,10 @@ public class ChessGame {
     private ChessPosition findKing(TeamColor teamColor) {
         for (int r = 1; r < 9; r++) {
             for (int c = 1; c < 9; c++) {
-                ChessPosition KingPos = new ChessPosition(r,c);
-                ChessPiece King = gameBoard.getPiece(KingPos);
-                if (King != null && (King.getPieceType() == ChessPiece.PieceType.KING && King.getTeamColor() == teamColor)) {
-                    return KingPos;
+                ChessPosition kingPos = new ChessPosition(r,c);
+                ChessPiece king = gameBoard.getPiece(kingPos);
+                if (king != null && (king.getPieceType() == ChessPiece.PieceType.KING && king.getTeamColor() == teamColor)) {
+                    return kingPos;
                 }
             }
         }
