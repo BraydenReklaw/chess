@@ -4,6 +4,7 @@ import chess.ChessGame;
 import model.*;
 import org.junit.jupiter.api.*;
 import dataaccess.*;
+import org.junit.jupiter.api.function.Executable;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -183,4 +184,5 @@ public class ServiceTests {
         Assertions.assertThrows(DataAccessException.class, () ->
                 gameService.join(testAuth.authToken(), testGame, "WHITE"));
     }
+
 }

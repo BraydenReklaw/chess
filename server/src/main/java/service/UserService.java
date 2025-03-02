@@ -14,6 +14,13 @@ public class UserService {
         this.authAccess = authAccess;
     }
 
+    public AuthData createAuthData(UserData userData) {
+        String authToken = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authToken, userData.username());
+        authAccess.createAuth(authData);
+        return authData;
+    }
+
     public AuthData register(UserData userData) throws DataAccessException {
         UserData user = dataAccess.getUser(userData.username());
         if (user != null) {
@@ -21,11 +28,7 @@ public class UserService {
         }
         dataAccess.createUser(userData);
 
-        String authToken = UUID.randomUUID().toString();
-        AuthData authData = new AuthData(authToken, userData.username());
-        authAccess.createAuth(authData);
-
-        return authData;
+        return createAuthData(userData);
     }
 
     public AuthData login(UserData userData) throws DataAccessException {
@@ -34,11 +37,7 @@ public class UserService {
             throw new DataAccessException("unauthorized");
         }
 
-        String authToken = UUID.randomUUID().toString();
-        AuthData authData = new AuthData(authToken, userData.username());
-        authAccess.createAuth(authData);
-
-        return authData;
+        return createAuthData(user);
     }
 
     public void logout(String authToken) throws DataAccessException {

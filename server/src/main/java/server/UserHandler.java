@@ -13,11 +13,10 @@ public class UserHandler {
         this.userService = userService;
     }
 
-    public Object register(Request req, Response res) throws DataAccessException {
+    public Object register(Request req, Response res) {
         UserData userData = new Gson().fromJson(req.body(), UserData.class);
         if (userData == null || userData.username() == null || userData.password()== null || userData.email() == null) {
-            res.status(400);
-            return "{ \"message\": \"Error: bad request\" }";
+            return ResponseHandler.handleResponse(res, 400, "bad request");
         }
         try {
             AuthData authData = userService.register(userData);
@@ -25,16 +24,14 @@ public class UserHandler {
             return new Gson().toJson(authData);
         } catch (DataAccessException e){
             if (e.getMessage().equals("already taken")) {
-                res.status(403);
-                return "{ \"message\": \"Error: already taken\" }";
+                return ResponseHandler.handleResponse(res, 403, e.getMessage());
             } else {
-                res.status(500);
-                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+                return ResponseHandler.handleResponse(res, 500, e.getMessage());
             }
         }
     }
 
-    public Object login(Request req, Response res) throws DataAccessException {
+    public Object login(Request req, Response res) {
         UserData userData = new Gson().fromJson(req.body(), UserData.class);
         try {
             AuthData authData = userService.login(userData);
@@ -42,17 +39,14 @@ public class UserHandler {
             return new Gson().toJson(authData);
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
-                res.status(401);
-                return "{ \"message\": \"Error: unauthorized\" }";
+                return ResponseHandler.handleResponse(res, 401, e.getMessage());
             } else {
-                res.status(500);
-                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+                return ResponseHandler.handleResponse(res, 500, e.getMessage());
             }
         }
     }
 
-    public Object logout(Request req, Response res) throws DataAccessException {
-//        System.out.println("Headers: " + req.headers());
+    public Object logout(Request req, Response res) {
         String authToken = req.headers("authorization");
         try {
             userService.logout(authToken);
@@ -60,11 +54,9 @@ public class UserHandler {
             return "{}";
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
-                res.status(401);
-                return "{ \"message\": \"Error: unauthorized\" }";
+                return ResponseHandler.handleResponse(res, 401, e.getMessage());
             } else {
-                res.status(500);
-                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+                return ResponseHandler.handleResponse(res, 500, e.getMessage());
             }
         }
     }

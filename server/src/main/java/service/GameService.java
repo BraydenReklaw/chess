@@ -14,28 +14,28 @@ public class GameService {
         this.authDataAccess = authDataAccess;
     }
 
-    public Collection<GameData> list(String authToken) throws DataAccessException {
-        AuthData authData = authDataAccess.getAuth(authToken);
+    public void checkAuth(AuthData authData) throws DataAccessException {
         if (authData == null) {
             throw new DataAccessException("unauthorized");
         }
+    }
+
+    public Collection<GameData> list(String authToken) throws DataAccessException {
+        AuthData authData = authDataAccess.getAuth(authToken);
+        checkAuth(authData);
         return gameDataAccess.listAll();
     }
 
     public String create(String authToken, String gameName) throws DataAccessException {
         AuthData authData = authDataAccess.getAuth(authToken);
-        if (authData == null) {
-            throw new DataAccessException("unauthorized");
-        }
+        checkAuth(authData);
         GameData gameData = gameDataAccess.createGame(gameName);
         return String.valueOf(gameData.gameID());
     }
 
     public void join(String authToken, GameData gameData, String playerColor) throws DataAccessException {
         AuthData authData = authDataAccess.getAuth(authToken);
-        if (authData == null) {
-            throw new DataAccessException("unauthorized");
-        }
+        checkAuth(authData);
         GameData game = gameDataAccess.getGame(gameData.gameID());
         if (game == null) {
             throw new DataAccessException("no game");
