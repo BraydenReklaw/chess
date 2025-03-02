@@ -66,7 +66,8 @@ public class GameHandler {
     public Object join(Request req, Response res) {
         String authToken = req.headers("authorization");
         JsonObject jsonObject = JsonParser.parseString(req.body()).getAsJsonObject();
-        String playerColor = jsonObject.get("playerColor").getAsString();
+        String playerColor = jsonObject.has("playerColor") ?
+                jsonObject.get("playerColor").getAsString() : null;
         jsonObject.remove("playerColor");
         GameData gameData = new Gson().fromJson(req.body(), GameData.class);
         Collection<String> playerColors = new ArrayList<>();
@@ -93,7 +94,10 @@ public class GameHandler {
             } else if (e.getMessage().equals("taken")){
                 res.status(403);
                 return "{ \"message\": \"Error: already taken\" }";
-            }{
+            } else if (e.getMessage().equals("no game")) {
+                res.status(400);
+                return "{ \"message\": \"Error: bad request\" }";
+            } else {
                 res.status(500);
                 return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
             }

@@ -25,7 +25,7 @@ public class GameDataAccess {
     public GameData createGame(String gameName) {
         int gameID = generateGameID();
         ChessGame game = new ChessGame();
-        GameData gameData = new GameData(gameID, "", "", gameName, game);
+        GameData gameData = new GameData(gameID, null, null, gameName, game);
         games.add(gameData);
         return gameData;
     }
@@ -39,15 +39,21 @@ public class GameDataAccess {
         return null;
     }
 
-    public void updateGame(AuthData authData, String playerColor, GameData gameData) {
+    public void updateGame(AuthData authData, String playerColor, GameData gameData) throws DataAccessException {
         if (playerColor.equals("WHITE")) {
             GameData game = getGame(gameData.gameID());
+            if (game.whiteUsername() != null) {
+                throw new DataAccessException("taken");
+            }
             GameData updatedGame = new GameData(game.gameID(), authData.username(), game.blackUsername(),
                     game.gameName(), game.game());
             games.remove(game);
             games.add(updatedGame);
         } else {
             GameData game = getGame(gameData.gameID());
+            if (game.blackUsername() != null) {
+                throw new DataAccessException("taken");
+            }
             GameData updatedGame = new GameData(game.gameID(), game.whiteUsername(), authData.username(),
                     game.gameName(), game.game());
             games.remove(game);
