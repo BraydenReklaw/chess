@@ -166,5 +166,23 @@ public class ServiceTests {
     }
 
     @Test
-    public void noGameToJoin() throws Data
+    public void noGameToJoin() throws DataAccessException {
+        userService.register(testUser1);
+        AuthData testAuth = userService.login(testUser1);
+        GameData testGame = new GameData(1234, null, null, "testGame", new ChessGame());
+
+        Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.join(testAuth.authToken(), testGame, "WHITE"));
+    }
+
+    @Test
+    public void playerAlreadyTaken() throws DataAccessException {
+        userService.register(testUser1);
+        AuthData testAuth = userService.login(testUser1);
+        GameData testGame = gameData.createGame("testGame");
+        gameService.join(testAuth.authToken(), testGame, "WHITE");
+
+        Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.join(testAuth.authToken(), testGame, "WHITE"));
+    }
 }
