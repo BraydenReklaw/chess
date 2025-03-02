@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDataAccess;
-import dataaccess.DataAccessException;
-import dataaccess.GameDataAccess;
+import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import java.util.Collection;
@@ -22,5 +20,14 @@ public class GameService {
             throw new DataAccessException("unauthorized");
         }
         return gameDataAccess.listAll();
+    }
+
+    public int create(String authToken, String gameName) throws DataAccessException {
+        AuthData authData = authDataAccess.getAuth(authToken);
+        if (authData == null) {
+            throw new DataAccessException("unauthorized");
+        }
+        GameData gameData = gameDataAccess.createGame(gameName);
+        return gameData.gameID();
     }
 }

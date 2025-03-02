@@ -33,6 +33,7 @@ public class UserHandler {
             }
         }
     }
+
     public Object login(Request req, Response res) throws DataAccessException {
         UserData userData = new Gson().fromJson(req.body(), UserData.class);
         try {
@@ -49,6 +50,7 @@ public class UserHandler {
             }
         }
     }
+
     public Object logout(Request req, Response res) throws DataAccessException {
 //        System.out.println("Headers: " + req.headers());
         String authToken = req.headers("authorization");

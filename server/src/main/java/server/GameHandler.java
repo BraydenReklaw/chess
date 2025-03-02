@@ -3,13 +3,11 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.GameData;
+import model.UserData;
 import service.GameService;
 import spark.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GameHandler {
     private GameService gameService;
@@ -27,6 +25,24 @@ public class GameHandler {
             Map<String, Collection<GameData>> gameMap = new HashMap<>();
             gameMap.put("games", games);
             return new Gson().toJson(gameMap);
+        } catch (DataAccessException e) {
+            if (e.getMessage().equals("unauthorized")) {
+                res.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            } else {
+                res.status(500);
+                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            }
+        }
+    }
+
+    public Object create(Request req, Response res) {
+        String authToken = req.headers("authorization");
+        GameData gameName = new Gson().fromJson(req.body(), GameData.class);
+        try {
+            int gameID = gameService.create(authToken, gameName);
+            res.status(200);
+            return new Gson().toJson(gameID);
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
                 res.status(401);
