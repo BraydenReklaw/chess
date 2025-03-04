@@ -366,3 +366,16 @@ How do I know I've written enough tests? standard is 90% of code is run during t
 Coverages: Line, Statement, Branch (do you test the true and false case of each `if` statement?), Function
 
 in intelliji, right click test, `more run/debug`, `run with coverage`. see slides for more examples of how to access
+
+## Relational Databases
+
+load driver, open database connection, start transaction, execute queries/updates, commit transaction, close connection. Dependency required [(see slides)](https://github.com/softwareconstruction240/softwareconstruction/blob/main/instruction/db-jdbc/db-jdbc.md). 
+Follow the implementation examples in the slides for understanding of that process. Make sure to close every transaction. 
+<b>Pay attention to the Execute a Query page</b>. 
+Working with a results set is just about the only place where Java is 1-based indexed, not 0-based. The goal is to pull from database and put into array for handling in the code.
+Watch out for SQL injection attacks. `String sql = "update book" + "set title = ?, author = ?" + "where id = ?"` helps prevent SQL injection. 
+SQLexceptions result from users trying to access sections of Database without permission. Look at the example database for a [Booklist](https://docs.google.com/presentation/d/12XS7en64-oQYivKayGyNGueWphiL6mm5/edit#slide=id.p69)
+
+## PHASE 4
+
+Your code must create a database. Create new DAOs that run with JDBC instead with jdbc and sql. Alter the instantiations in server.java with the JDBC DAO. Maybe use a parent DAO class with a static initializer so the database is created when server starts up. DatabaseManager creates database, but not tables, so add createTables method with create user, auth and game if not exists. call createTables form createDatabase. 
