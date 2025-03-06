@@ -378,4 +378,16 @@ SQLexceptions result from users trying to access sections of Database without pe
 
 ## PHASE 4
 
-Your code must create a database. Create new DAOs that run with JDBC instead with jdbc and sql. Alter the instantiations in server.java with the JDBC DAO. Maybe use a parent DAO class with a static initializer so the database is created when server starts up. DatabaseManager creates database, but not tables, so add createTables method with create user, auth and game if not exists. call createTables form createDatabase. 
+Your code must create a database. Create new DAOs that run with JDBC instead with jdbc and sql. Alter the instantiations in server.java with the JDBC DAO. 
+Maybe use a parent DAO class with a static initializer so the database is created when server starts up. 
+DatabaseManager creates database, but not tables, so add createTables method with create user, auth and game if not exists. call createTables form createDatabase. 
+
+The autograder will call and create its own database. make sure that you also call/create one yourself. DAO's should not be serializing/deserializing.
+
+### MySQL
+
+installation required (server and shell) `mysql -u [username] -p [password]` `use [database]` open a database. most commands require a ;. 
+MySQL workbench (also download), a GUI for mySQL.
+remember `grant` for permission handling and whatnot
+
+LOOK AT SECURING PASSWORDS
