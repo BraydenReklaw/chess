@@ -83,9 +83,24 @@ public class AuthSQLTests {
     }
 
     @Test
-    void tryDeleteNonexistentAuth()  throws DataAccessException {
-        // Don't really know to implement this test, as deleteAuth would ultimately change nothing and throw nothing if
-        // given a bad token, and logic in the services prevent a bad token reaching this function at all.
-        Assertions.assertDoesNotThrow(() -> dataAccess.deleteAuth("Token"));
+    void successfulClear() throws DataAccessException, SQLException {
+        AuthData test2 = new AuthData("token2", "user2");
+        AuthData test3 = new AuthData("token3", "user3");
+
+        dataAccess.createAuth(defaultAuth);
+        dataAccess.createAuth(test2);
+        dataAccess.createAuth(test3);
+
+        dataAccess.clearAll();
+
+        try (var connection = DatabaseManager.getConnection();
+             var prepStatement = connection.prepareStatement(
+                     "SELECT * FROM auths")) {
+            try (var results = prepStatement.executeQuery()) {
+                Assertions.assertFalse(results.next());
+            }
+        }
     }
+
+
 }

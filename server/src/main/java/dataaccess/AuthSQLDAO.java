@@ -59,4 +59,14 @@ public class AuthSQLDAO {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    public void clearAll() throws DataAccessException {
+        String clearSQL = "TRUNCATE auths";
+        try (var connection = DatabaseManager.getConnection();
+             var statement = connection.createStatement()) {
+            statement.executeUpdate(clearSQL);
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }

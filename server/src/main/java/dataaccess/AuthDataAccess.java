@@ -34,6 +34,7 @@ public class AuthDataAccess {
     }
 
     public boolean isEmpty() {
+        // This is purely to facilitate a service test
         return auths.isEmpty();
     }
 }
