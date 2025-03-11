@@ -7,10 +7,10 @@ import java.sql.SQLException;
 public class AuthSQLDAO {
 
     public AuthSQLDAO() throws SQLException, DataAccessException {
-        createTable();
+        createAuthsTable();
     }
 
-    private void createTable() {
+    private void createAuthsTable() {
         String authTableSQL = "CREATE TABLE IF NOT EXISTS auths (" +
                 "authToken varchar(255) PRIMARY KEY, " +
                 "username varchar(255) NOT NULL)";
@@ -21,18 +21,31 @@ public class AuthSQLDAO {
         }
     }
 
-    public void createAuth(AuthData authData)  {
+    public void createAuth(AuthData authData) throws DataAccessException {
         String createSQL = "INSERT INTO auths (authToken, username) VALUES (?, ?)";
-        try (var connection = DatabaseManager.getConnection(); var prepStatement = connection.prepareStatement(createSQL)) {
+        try (var connection = DatabaseManager.getConnection();
+             var prepStatement = connection.prepareStatement(createSQL)) {
             prepStatement.setString(1, authData.authToken());
             prepStatement.setString(2, authData.username());
             prepStatement.executeUpdate();
-        } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 
-    public void getAuth(String authToken) {
-
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        String selectSQL = "SELECT * FROM auths WHERE authToken = ?";
+        try (var connection = DatabaseManager.getConnection();
+             var prepStatement = connection.prepareStatement(selectSQL)){
+            prepStatement.setString(1, authToken);
+            try (var results = prepStatement.executeQuery()) {
+                if (results.next()) {
+                    return new AuthData(results.getString("authToken"), results.getString("username"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return null;
     }
 }

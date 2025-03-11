@@ -17,8 +17,8 @@ public class AuthSQLTests {
     void setUp() throws DataAccessException, SQLException {
         DatabaseManager.createDatabase();
         dataAccess = new AuthSQLDAO();
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("TRUNCATE auths")) {
+        try (var connection = DatabaseManager.getConnection()) {
+            try (var statement = connection.prepareStatement("TRUNCATE auths")) {
                 statement.executeUpdate();
             }
         }
@@ -30,8 +30,8 @@ public class AuthSQLTests {
 
     @AfterEach
     void tearDown() throws SQLException, DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("TRUNCATE auths")) {
+        try (var connection = DatabaseManager.getConnection()) {
+            try (var statement = connection.prepareStatement("TRUNCATE auths")) {
                 statement.executeUpdate();
             }
         }
@@ -44,7 +44,7 @@ public class AuthSQLTests {
         String resultUser;
         try (var connection = DatabaseManager.getConnection();
              var prepStatement = connection.prepareStatement(
-                     "SELECT authToken, username FROM auths WHERE authToken=?")) {
+                     "SELECT * FROM auths WHERE authToken=?")) {
             prepStatement.setString(1, defaultAuth.authToken());
             try (var results = prepStatement.executeQuery()) {
                 results.next();
@@ -59,6 +59,6 @@ public class AuthSQLTests {
     @Test
     void tryToAddSameAuth() throws DataAccessException, SQLException {
         dataAccess.createAuth(defaultAuth);
-        Assertions.assertThrows(RuntimeException.class, () -> dataAccess.createAuth(defaultAuth));
+        Assertions.assertThrows(DataAccessException.class, () -> dataAccess.createAuth(defaultAuth));
     }
 }
