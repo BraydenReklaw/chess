@@ -48,4 +48,15 @@ public class AuthSQLDAO {
         }
         return null;
     }
+
+    public void deleteAuth(String authToken) throws DataAccessException {
+        String deleteSQL = "DELETE FROM auths WHERE authToken = ?";
+        try (var connection = DatabaseManager.getConnection();
+             var prepStatement = connection.prepareStatement(deleteSQL)) {
+            prepStatement.setString(1, authToken);
+            prepStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }

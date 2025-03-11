@@ -61,4 +61,31 @@ public class AuthSQLTests {
         dataAccess.createAuth(defaultAuth);
         Assertions.assertThrows(DataAccessException.class, () -> dataAccess.createAuth(defaultAuth));
     }
+
+    @Test
+    void successfulGet() throws DataAccessException {
+        dataAccess.createAuth(defaultAuth);
+        AuthData result = dataAccess.getAuth("token");
+        Assertions.assertEquals(result, defaultAuth);
+    }
+
+    @Test
+    void tryGetBadToken() throws DataAccessException {
+        dataAccess.createAuth(defaultAuth);
+        Assertions.assertNull(dataAccess.getAuth("badToken"));
+    }
+
+    @Test
+    void successfulDelete() throws DataAccessException {
+        dataAccess.createAuth(defaultAuth);
+        dataAccess.deleteAuth("token");
+        Assertions.assertNull(dataAccess.getAuth("token"));
+    }
+
+    @Test
+    void tryDeleteNonexistentAuth()  throws DataAccessException {
+        // Don't really know to implement this test, as deleteAuth would ultimately change nothing and throw nothing if
+        // given a bad token, and logic in the services prevent a bad token reaching this function at all.
+        Assertions.assertDoesNotThrow(() -> dataAccess.deleteAuth("Token"));
+    }
 }
