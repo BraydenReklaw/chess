@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class AuthSQLDAO {
 
-    public AuthSQLDAO() throws SQLException, DataAccessException {
+    public AuthSQLDAO() {
         createAuthsTable();
     }
 
@@ -14,7 +14,8 @@ public class AuthSQLDAO {
         String authTableSQL = "CREATE TABLE IF NOT EXISTS auths (" +
                 "authToken varchar(255) PRIMARY KEY, " +
                 "username varchar(255) NOT NULL)";
-        try (var connection = DatabaseManager.getConnection(); var statement = connection.createStatement()) {
+        try (var connection = DatabaseManager.getConnection();
+             var statement = connection.createStatement()) {
             statement.execute(authTableSQL);
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
@@ -70,6 +71,7 @@ public class AuthSQLDAO {
         }
     }
 
+    // This is here to service tests in ServiceTests
     public boolean isEmpty() throws DataAccessException {
         String countSQL = "SELECT COUNT(*) AS total FROM auths";
         try (var conn = DatabaseManager.getConnection();

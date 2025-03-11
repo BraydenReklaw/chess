@@ -57,7 +57,7 @@ public class AuthSQLTests {
     }
 
     @Test
-    void tryToAddSameAuth() throws DataAccessException, SQLException {
+    void tryToAddSameAuth() throws DataAccessException {
         dataAccess.createAuth(defaultAuth);
         Assertions.assertThrows(DataAccessException.class, () -> dataAccess.createAuth(defaultAuth));
     }
