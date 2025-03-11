@@ -4,8 +4,6 @@ import spark.*;
 import dataaccess.*;
 import service.*;
 
-import java.sql.SQLException;
-
 public class Server {
     UserDataAccess userDataAccess = new UserDataAccess();
     AuthSQLDAO authDataAccess = new AuthSQLDAO();
@@ -17,7 +15,7 @@ public class Server {
     GameHandler gameHandler = new GameHandler(gameService);
     ClearHandler clearHandler = new ClearHandler(clearService);
 
-    public Server() throws SQLException, DataAccessException {
+    public Server() {
     }
 
     public int run(int desiredPort) {
@@ -35,7 +33,7 @@ public class Server {
         Spark.put("/game", (request, response) -> gameHandler.join(request, response));
 
         //This line initializes the server and can be removed once you have a functioning endpoint
-        Spark.init();
+        // Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
