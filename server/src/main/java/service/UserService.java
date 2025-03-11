@@ -7,14 +7,14 @@ import java.util.UUID;
 
 public class UserService {
     private UserDataAccess dataAccess;
-    private AuthDataAccess authAccess;
+    private AuthSQLDAO authAccess;
 
-    public UserService(UserDataAccess dataAccess, AuthDataAccess authAccess) {
+    public UserService(UserDataAccess dataAccess, AuthSQLDAO authAccess) {
         this.dataAccess = dataAccess;
         this.authAccess = authAccess;
     }
 
-    public AuthData createAuthData(UserData userData) {
+    public AuthData createAuthData(UserData userData) throws DataAccessException {
         String authToken = UUID.randomUUID().toString();
         AuthData authData = new AuthData(authToken, userData.username());
         authAccess.createAuth(authData);

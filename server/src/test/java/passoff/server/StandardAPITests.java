@@ -1,11 +1,13 @@
 package passoff.server;
 
 import chess.ChessGame;
+import dataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
 import passoff.model.*;
 import server.Server;
 
 import java.net.HttpURLConnection;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
@@ -30,7 +32,7 @@ public class StandardAPITests {
     }
 
     @BeforeAll
-    public static void init() {
+    public static void init() throws SQLException, DataAccessException {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);

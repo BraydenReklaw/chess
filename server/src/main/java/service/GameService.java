@@ -7,9 +7,9 @@ import java.util.Collection;
 
 public class GameService {
     private GameDataAccess gameDataAccess;
-    private AuthDataAccess authDataAccess;
+    private AuthSQLDAO authDataAccess;
 
-    public GameService(GameDataAccess gameDataAccess, AuthDataAccess authDataAccess) {
+    public GameService(GameDataAccess gameDataAccess, AuthSQLDAO authDataAccess) {
         this.gameDataAccess = gameDataAccess;
         this.authDataAccess = authDataAccess;
     }

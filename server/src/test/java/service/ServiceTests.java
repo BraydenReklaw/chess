@@ -6,12 +6,13 @@ import org.junit.jupiter.api.*;
 import dataaccess.*;
 import org.junit.jupiter.api.function.Executable;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.UUID;
 
 public class ServiceTests {
     private UserDataAccess userData;
-    private AuthDataAccess authData;
+    private AuthSQLDAO authData;
     private GameDataAccess gameData;
     private ClearService clearService;
     private UserService userService;
@@ -21,9 +22,9 @@ public class ServiceTests {
 
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws SQLException, DataAccessException {
         userData = new UserDataAccess();
-        authData = new AuthDataAccess();
+        authData = new AuthSQLDAO();
         gameData = new GameDataAccess();
         clearService = new ClearService(userData, authData, gameData);
         userService = new UserService(userData, authData);
@@ -33,7 +34,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void successfulClear() {
+    public void successfulClear() throws DataAccessException {
         userData.createUser(testUser1);
         authData.createAuth(testAuth1);
         gameData.createGame("testGameClear");
@@ -53,7 +54,7 @@ public class ServiceTests {
 
         Assertions.assertFalse(userData.isEmpty());
         Assertions.assertFalse(authData.isEmpty());
-        Assertions.assertSame(authData.getAuth(actual.authToken()), actual);
+        Assertions.assertEquals(authData.getAuth(actual.authToken()), actual);
     }
 
     @Test
@@ -154,7 +155,7 @@ public class ServiceTests {
         Collection <GameData> gameList = gameService.list(testAuth.authToken());
 
         Assertions.assertNotNull(updatedGame.whiteUsername());
-        Assertions.assertSame(testAuth.username(), updatedGame.whiteUsername());
+        Assertions.assertEquals(testAuth.username(), updatedGame.whiteUsername());
         Assertions.assertSame(1, gameList.size());
     }
 

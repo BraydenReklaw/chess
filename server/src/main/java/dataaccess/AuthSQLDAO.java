@@ -69,4 +69,18 @@ public class AuthSQLDAO {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    public boolean isEmpty() throws DataAccessException {
+        String countSQL = "SELECT COUNT(*) AS total FROM auths";
+        try (var conn = DatabaseManager.getConnection();
+             var stmt = conn.createStatement();
+             var rs = stmt.executeQuery(countSQL)) {
+            if (rs.next()) {
+                return rs.getInt("total") == 0;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return true;
+    }
 }

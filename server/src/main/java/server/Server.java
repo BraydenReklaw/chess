@@ -4,9 +4,11 @@ import spark.*;
 import dataaccess.*;
 import service.*;
 
+import java.sql.SQLException;
+
 public class Server {
     UserDataAccess userDataAccess = new UserDataAccess();
-    AuthDataAccess authDataAccess = new AuthDataAccess();
+    AuthSQLDAO authDataAccess = new AuthSQLDAO();
     GameDataAccess gameDataAccess = new GameDataAccess();
     UserService userService = new UserService(userDataAccess, authDataAccess);
     GameService gameService = new GameService(gameDataAccess, authDataAccess);
@@ -14,6 +16,9 @@ public class Server {
     UserHandler userHandler = new UserHandler(userService);
     GameHandler gameHandler = new GameHandler(gameService);
     ClearHandler clearHandler = new ClearHandler(clearService);
+
+    public Server() throws SQLException, DataAccessException {
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
