@@ -37,4 +37,20 @@ public class UserSQLDAO {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    public UserData getUser(String username) throws DataAccessException {
+        String selectSQL = "SELECT * FROM users WHERE username = ?";
+        try (var connection = DatabaseManager.getConnection();
+             var prepStatement = connection.prepareStatement(selectSQL)){
+            prepStatement.setString(1, username);
+            try (var results = prepStatement.executeQuery()) {
+                if (results.next()) {
+                    return new UserData(results.getString("username"), results.getString("password"), results.getString("email"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return null;
+    }
 }

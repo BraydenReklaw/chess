@@ -66,4 +66,17 @@ public class UserSQLTests {
         dataAccess.createUser(defaultUser);
         Assertions.assertThrows(DataAccessException.class, () -> dataAccess.createUser(defaultUser));
     }
+
+    @Test
+    void successfulGet() throws DataAccessException {
+        dataAccess.createUser(defaultUser);
+        UserData result = dataAccess.getUser("user1");
+        Assertions.assertEquals(result, defaultUser);
+    }
+
+    @Test
+    void getBadUser() throws DataAccessException {
+        dataAccess.createUser(defaultUser);
+        Assertions.assertNull(dataAccess.getUser("user2"));
+    }
 }
