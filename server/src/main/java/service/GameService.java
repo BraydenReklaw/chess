@@ -34,6 +34,10 @@ public class GameService {
     }
 
     public void join(String authToken, GameData gameData, String playerColor) throws DataAccessException {
+
+        // Look into passing only 1 argument to updateGame, creating a new GameData instance with desired updates
+        // and passing that to updateGame
+
         AuthData authData = authDataAccess.getAuth(authToken);
         checkAuth(authData);
         GameData game = gameDataAccess.getGame(gameData.gameID());

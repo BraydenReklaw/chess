@@ -1,7 +1,7 @@
 package dataaccess;
 
-import chess.ChessBoard;
 import chess.ChessGame;
+import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +13,6 @@ import java.sql.SQLException;
 public class GameSQLTests {
 
     GameSQLDAO dataAccess;
-    GameData defaultChessGame;
 
     @BeforeEach
     void setUp() throws DataAccessException, SQLException {
@@ -24,13 +23,6 @@ public class GameSQLTests {
                 statement.executeUpdate();
             }
         }
-        ChessGame defaultGame = new ChessGame();
-        ChessBoard board = new ChessBoard();
-        board.resetBoard();
-        defaultGame.setBoard(board);
-
-        defaultChessGame = new GameData(1234, "white",
-                "black", "default", defaultGame);
     }
 
     @AfterEach
@@ -86,5 +78,20 @@ public class GameSQLTests {
     void badID() throws DataAccessException {
         dataAccess.createGame("game1");
         Assertions.assertNull(dataAccess.getGame(1));
+    }
+
+    @Test
+    void SuccessfulUpdate() throws DataAccessException {
+        GameData createdGame = dataAccess.createGame("game1");
+        dataAccess.updateGame(new AuthData("token", "user1"), "WHITE", createdGame);
+        Assertions.assertEquals("user1", dataAccess.getGame(createdGame.gameID()).whiteUsername());
+    }
+
+    @Test
+    void updateNonexistentGame() {
+        Assertions.assertThrows(DataAccessException.class, () -> dataAccess.updateGame(
+                new AuthData("token", "user1"),
+                "WHITE",
+                new GameData(1, null, null, null, null)));
     }
 }
