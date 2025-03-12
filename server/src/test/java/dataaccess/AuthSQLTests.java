@@ -29,7 +29,7 @@ public class AuthSQLTests {
     }
 
     @AfterEach
-    void tearDown() throws SQLException, DataAccessException {
+    void cleanUp() throws SQLException, DataAccessException {
         try (var connection = DatabaseManager.getConnection()) {
             try (var statement = connection.prepareStatement("TRUNCATE auths")) {
                 statement.executeUpdate();
