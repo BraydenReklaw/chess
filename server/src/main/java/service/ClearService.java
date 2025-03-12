@@ -3,11 +3,11 @@ package service;
 import dataaccess.*;
 
 public class ClearService {
-    private UserDataAccess userData;
+    private UserSQLDAO userData;
     private AuthSQLDAO authData;
     private GameDataAccess gameData;
 
-    public ClearService(UserDataAccess userData, AuthSQLDAO authData, GameDataAccess gameData) {
+    public ClearService(UserSQLDAO userData, AuthSQLDAO authData, GameDataAccess gameData) {
         this.userData = userData;
         this.authData = authData;
         this.gameData = gameData;

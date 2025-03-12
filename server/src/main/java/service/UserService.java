@@ -7,10 +7,10 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.UUID;
 
 public class UserService {
-    private UserDataAccess dataAccess;
+    private UserSQLDAO dataAccess;
     private AuthSQLDAO authAccess;
 
-    public UserService(UserDataAccess dataAccess, AuthSQLDAO authAccess) {
+    public UserService(UserSQLDAO dataAccess, AuthSQLDAO authAccess) {
         this.dataAccess = dataAccess;
         this.authAccess = authAccess;
     }

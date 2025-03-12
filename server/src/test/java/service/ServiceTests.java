@@ -4,14 +4,11 @@ import chess.ChessGame;
 import model.*;
 import org.junit.jupiter.api.*;
 import dataaccess.*;
-import org.junit.jupiter.api.function.Executable;
-
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.UUID;
 
 public class ServiceTests {
-    private UserDataAccess userData;
+    private UserSQLDAO userData;
     private AuthSQLDAO authData;
     private GameDataAccess gameData;
     private ClearService clearService;
@@ -22,8 +19,8 @@ public class ServiceTests {
 
 
     @BeforeEach
-    public void setup() throws SQLException, DataAccessException {
-        userData = new UserDataAccess();
+    public void setup() {
+        userData = new UserSQLDAO();
         authData = new AuthSQLDAO();
         gameData = new GameDataAccess();
         clearService = new ClearService(userData, authData, gameData);
@@ -31,6 +28,12 @@ public class ServiceTests {
         gameService = new GameService(gameData, authData);
         testUser1 = new UserData("user1", "password1", "email");
         testAuth1 = new AuthData(UUID.randomUUID().toString(), "user1");
+    }
+
+    @AfterEach
+    public void cleanup() throws DataAccessException {
+        userData.clearAll();
+        authData.clearAll();
     }
 
     @Test

@@ -5,7 +5,7 @@ import dataaccess.*;
 import service.*;
 
 public class Server {
-    UserDataAccess userDataAccess = new UserDataAccess();
+    UserSQLDAO userDataAccess = new UserSQLDAO();
     AuthSQLDAO authDataAccess = new AuthSQLDAO();
     GameDataAccess gameDataAccess = new GameDataAccess();
     UserService userService = new UserService(userDataAccess, authDataAccess);
