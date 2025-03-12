@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import model.GameData;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,31 @@ public class GameSQLTests {
     }
 
     @Test
-    void successfulList() throws DataAccessException {
+    void successfulCreate() throws DataAccessException {
+        GameData results = dataAccess.createGame("game1");
+        Assertions.assertInstanceOf(Integer.class, results.gameID());
+        Assertions.assertNull(results.whiteUsername());
+        Assertions.assertNull(results.blackUsername());
+        Assertions.assertEquals(results.gameName(), "game1");
+        Assertions.assertInstanceOf(ChessGame.class, results.game());
+    }
 
+    @Test
+    void badGameName() {
+        Assertions.assertThrows(DataAccessException.class, () -> dataAccess.createGame(null));
+    }
+
+    @Test
+    void successfulList() throws DataAccessException {
+        dataAccess.createGame("game1");
+        dataAccess.createGame("game2");
+        dataAccess.createGame("game3");
+
+        Assertions.assertEquals(3, dataAccess.listAll().size());
+    }
+
+    @Test
+    void listWhenNoGames() throws DataAccessException {
+        Assertions.assertEquals(0, dataAccess.listAll().size());
     }
 }

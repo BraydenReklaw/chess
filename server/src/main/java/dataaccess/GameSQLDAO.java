@@ -21,8 +21,8 @@ public class GameSQLDAO {
                 "gameID INT NOT NULL, " +
                 "whiteUsername VARCHAR(255), " +
                 "blackUsername VARCHAR(255), " +
-                "gameName VARCHAR(255)," +
-                "game TEXT " +
+                "gameName VARCHAR(255) NOT NULL," +
+                "game TEXT, " +
                 "PRIMARY KEY (gameID))";
         try (var connection = DatabaseManager.getConnection();
              var statement = connection.createStatement()) {
@@ -33,8 +33,12 @@ public class GameSQLDAO {
     }
 
     public GameData createGame(String gameName) throws DataAccessException {
+        if (gameName == null || gameName.length() == 0) {
+            throw new DataAccessException("Invalid Game Name");
+        }
         int gameId = generateGameID();
         ChessGame chessGame = new ChessGame();
+        GameData returnGame = new GameData(gameId, null, null, gameName, chessGame);
         String game = gameSerializer.serializeGame(chessGame);
         String createSQL = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game) " +
                 "VALUES (?,?,?,?,?)";
@@ -49,7 +53,7 @@ public class GameSQLDAO {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
-        return
+        return returnGame;
     }
 
     public Collection<GameData> listAll() throws DataAccessException {
