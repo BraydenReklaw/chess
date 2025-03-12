@@ -4,18 +4,35 @@ import spark.*;
 import dataaccess.*;
 import service.*;
 
+import java.sql.SQLException;
+
 public class Server {
-    UserSQLDAO userDataAccess = new UserSQLDAO();
-    AuthSQLDAO authDataAccess = new AuthSQLDAO();
-    GameSQLDAO gameDataAccess = new GameSQLDAO();
-    UserService userService = new UserService(userDataAccess, authDataAccess);
-    GameService gameService = new GameService(gameDataAccess, authDataAccess);
-    ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
-    UserHandler userHandler = new UserHandler(userService);
-    GameHandler gameHandler = new GameHandler(gameService);
-    ClearHandler clearHandler = new ClearHandler(clearService);
+    UserSQLDAO userDataAccess;
+    AuthSQLDAO authDataAccess;
+    GameSQLDAO gameDataAccess;
+    UserService userService;
+    GameService gameService;
+    ClearService clearService;
+    UserHandler userHandler;
+    GameHandler gameHandler;
+    ClearHandler clearHandler;
 
     public Server() {
+        try {
+            DatabaseInit.initialize();
+
+            userDataAccess = new UserSQLDAO();
+            authDataAccess = new AuthSQLDAO();
+            gameDataAccess = new GameSQLDAO();
+            userService = new UserService(userDataAccess, authDataAccess);
+            gameService = new GameService(gameDataAccess, authDataAccess);
+            clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
+            userHandler = new UserHandler(userService);
+            gameHandler = new GameHandler(gameService);
+            clearHandler = new ClearHandler(clearService);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Failed to initialize the server due to database issues: " + e.getMessage());
+        }
     }
 
     public int run(int desiredPort) {
