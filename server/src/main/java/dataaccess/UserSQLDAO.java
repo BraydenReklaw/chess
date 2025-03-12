@@ -1,6 +1,5 @@
 package dataaccess;
 
-import model.AuthData;
 import model.UserData;
 
 import java.sql.SQLException;
@@ -52,5 +51,30 @@ public class UserSQLDAO {
             throw new DataAccessException(e.getMessage());
         }
         return null;
+    }
+
+    public void clearAll() throws DataAccessException {
+        String clearSQL = "TRUNCATE users";
+        try (var connection = DatabaseManager.getConnection();
+             var statement = connection.createStatement()) {
+            statement.executeUpdate(clearSQL);
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    //This is to service clear tests
+    public boolean isEmpty() throws DataAccessException {
+        String countSQL = "SELECT COUNT(*) AS total FROM users";
+        try (var conn = DatabaseManager.getConnection();
+             var stmt = conn.createStatement();
+             var rs = stmt.executeQuery(countSQL)) {
+            if (rs.next()) {
+                return rs.getInt("total") == 0;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return true;
     }
 }

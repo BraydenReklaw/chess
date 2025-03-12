@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 
 public class UserSQLTests {
@@ -78,5 +79,16 @@ public class UserSQLTests {
     void getBadUser() throws DataAccessException {
         dataAccess.createUser(defaultUser);
         Assertions.assertNull(dataAccess.getUser("user2"));
+    }
+
+    @Test
+    void clear() throws DataAccessException {
+        dataAccess.createUser(defaultUser);
+        dataAccess.createUser(new UserData("user2", "password2", "email"));
+        dataAccess.createUser(new UserData("user3", "password3", "email"));
+
+        dataAccess.clearAll();
+
+        Assertions.assertTrue(dataAccess.isEmpty());
     }
 }
