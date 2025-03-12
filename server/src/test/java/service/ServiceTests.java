@@ -34,6 +34,7 @@ public class ServiceTests {
     public void cleanup() throws DataAccessException {
         userData.clearAll();
         authData.clearAll();
+        gameData.clearAll();
     }
 
     @Test
@@ -132,14 +133,13 @@ public class ServiceTests {
 
     @Test
     public void successfulCreateGame() throws DataAccessException {
-        userService.register(testUser1);
-        AuthData testAuth = userService.login(testUser1);
+        AuthData testAuth = userService.register(testUser1);
         String gameID = gameService.create(testAuth.authToken(), "testGame1");
         GameData createdGame = gameData.getGame(Integer.parseInt(gameID));
         Collection <GameData> gameList = gameService.list(testAuth.authToken());
 
         Assertions.assertEquals(1, gameList.size());
-        Assertions.assertSame("testGame1", createdGame.gameName());
+        Assertions.assertEquals("testGame1", createdGame.gameName());
     }
 
     @Test
