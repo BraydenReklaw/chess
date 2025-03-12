@@ -94,4 +94,15 @@ public class GameSQLTests {
                 "WHITE",
                 new GameData(1, null, null, null, null)));
     }
+
+    @Test
+    void successfulClear() throws DataAccessException {
+        dataAccess.createGame("game1");
+        dataAccess.createGame("game2");
+        dataAccess.createGame("game3");
+
+        dataAccess.clearAll();
+
+        Assertions.assertEquals(0, dataAccess.listAll().size());
+    }
 }

@@ -6,10 +6,10 @@ import model.GameData;
 import java.util.Collection;
 
 public class GameService {
-    private GameDataAccess gameDataAccess;
+    private GameSQLDAO gameDataAccess;
     private AuthSQLDAO authDataAccess;
 
-    public GameService(GameDataAccess gameDataAccess, AuthSQLDAO authDataAccess) {
+    public GameService(GameSQLDAO gameDataAccess, AuthSQLDAO authDataAccess) {
         this.gameDataAccess = gameDataAccess;
         this.authDataAccess = authDataAccess;
     }

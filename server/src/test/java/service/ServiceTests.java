@@ -10,7 +10,7 @@ import java.util.UUID;
 public class ServiceTests {
     private UserSQLDAO userData;
     private AuthSQLDAO authData;
-    private GameDataAccess gameData;
+    private GameSQLDAO gameData;
     private ClearService clearService;
     private UserService userService;
     private GameService gameService;
@@ -22,7 +22,7 @@ public class ServiceTests {
     public void setup() {
         userData = new UserSQLDAO();
         authData = new AuthSQLDAO();
-        gameData = new GameDataAccess();
+        gameData = new GameSQLDAO();
         clearService = new ClearService(userData, authData, gameData);
         userService = new UserService(userData, authData);
         gameService = new GameService(gameData, authData);
@@ -46,7 +46,7 @@ public class ServiceTests {
 
         Assertions.assertTrue(userData.isEmpty());
         Assertions.assertTrue(authData.isEmpty());
-        Assertions.assertTrue(gameData.isEmpty());
+        Assertions.assertEquals(0, gameData.listAll().size());
     }
 
 

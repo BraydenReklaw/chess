@@ -7,7 +7,7 @@ import service.*;
 public class Server {
     UserSQLDAO userDataAccess = new UserSQLDAO();
     AuthSQLDAO authDataAccess = new AuthSQLDAO();
-    GameDataAccess gameDataAccess = new GameDataAccess();
+    GameSQLDAO gameDataAccess = new GameSQLDAO();
     UserService userService = new UserService(userDataAccess, authDataAccess);
     GameService gameService = new GameService(gameDataAccess, authDataAccess);
     ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
