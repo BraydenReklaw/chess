@@ -3,6 +3,7 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,6 +78,26 @@ public class GameSQLDAO {
             throw new DataAccessException(e.getMessage());
         }
         return games;
+    }
+
+    public GameData getGame(int gameId) throws DataAccessException {
+        String getSQL = "SELECT * FROM games WHERE gameID = ?";
+        try (var connection = DatabaseManager.getConnection();
+             var prepStatement = connection.prepareStatement(getSQL)){
+            prepStatement.setInt(1, gameId);
+            try (var results = prepStatement.executeQuery()) {
+                if (results.next()) {
+                    return new GameData(results.getInt("gameID"),
+                            results.getString("whiteUsername"),
+                            results.getString("blackUsername"),
+                            results.getString("gameName"),
+                            gameSerializer.deserializeGame(results.getString("game")));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return null;
     }
 
     private int generateGameID() throws DataAccessException {

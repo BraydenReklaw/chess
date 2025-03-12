@@ -48,7 +48,7 @@ public class GameSQLTests {
         Assertions.assertInstanceOf(Integer.class, results.gameID());
         Assertions.assertNull(results.whiteUsername());
         Assertions.assertNull(results.blackUsername());
-        Assertions.assertEquals(results.gameName(), "game1");
+        Assertions.assertEquals("game1", results.gameName());
         Assertions.assertInstanceOf(ChessGame.class, results.game());
     }
 
@@ -69,5 +69,22 @@ public class GameSQLTests {
     @Test
     void listWhenNoGames() throws DataAccessException {
         Assertions.assertEquals(0, dataAccess.listAll().size());
+    }
+
+    @Test
+    void successfulGet() throws DataAccessException {
+        GameData createdGame = dataAccess.createGame("game1");
+        GameData result = dataAccess.getGame(createdGame.gameID());
+        Assertions.assertEquals(createdGame.gameID(), result.gameID());
+        Assertions.assertEquals(createdGame.whiteUsername(), result.whiteUsername());
+        Assertions.assertEquals(createdGame.blackUsername(), result.blackUsername());
+        Assertions.assertEquals(createdGame.gameName(), result.gameName());
+        Assertions.assertEquals(createdGame.game().getBoard(), result.game().getBoard());
+    }
+
+    @Test
+    void badID() throws DataAccessException {
+        dataAccess.createGame("game1");
+        Assertions.assertNull(dataAccess.getGame(1));
     }
 }
