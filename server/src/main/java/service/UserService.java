@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.UUID;
 
@@ -26,14 +27,16 @@ public class UserService {
         if (user != null) {
             throw new DataAccessException("already taken");
         }
-        dataAccess.createUser(userData);
+
+        String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
+        dataAccess.createUser(new UserData(userData.username(), hashedPassword, userData.email()));
 
         return createAuthData(userData);
     }
 
     public AuthData login(UserData userData) throws DataAccessException {
         UserData user = dataAccess.getUser(userData.username());
-        if (user == null || !user.password().equals(userData.password())) {
+        if (user == null || !BCrypt.checkpw(userData.password(), user.password())) {
             throw new DataAccessException("unauthorized");
         }
 
