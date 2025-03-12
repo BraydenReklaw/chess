@@ -81,7 +81,7 @@ public class GameSQLTests {
     }
 
     @Test
-    void SuccessfulUpdate() throws DataAccessException {
+    void successfulUpdate() throws DataAccessException {
         GameData createdGame = dataAccess.createGame("game1");
         dataAccess.updateGame(new AuthData("token", "user1"), "WHITE", createdGame);
         Assertions.assertEquals("user1", dataAccess.getGame(createdGame.gameID()).whiteUsername());

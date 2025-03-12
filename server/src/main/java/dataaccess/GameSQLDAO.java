@@ -135,14 +135,14 @@ public class GameSQLDAO {
 
     private int generateGameID() throws DataAccessException {
         Random random = new Random();
-        int ID = 0;
+        int id = 0;
         boolean unique = false;
         while (!unique) {
-            ID = 1000 + random.nextInt(9000);
+            id = 1000 + random.nextInt(9000);
             String checkUnique = "SELECT COUNT(*) FROM games WHERE gameID = ?";
             try (var connection = DatabaseManager.getConnection();
                  var prepStatement = connection.prepareStatement(checkUnique)) {
-                prepStatement.setInt(1, ID);
+                prepStatement.setInt(1, id);
                 var results = prepStatement.executeQuery();
                 if (results.next() && results.getInt(1) == 0) {
                     unique = true;
@@ -151,7 +151,7 @@ public class GameSQLDAO {
                 throw new DataAccessException(e.getMessage());
             }
         }
-        return ID;
+        return id;
     }
 
     public void clearAll() throws DataAccessException {
