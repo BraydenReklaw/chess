@@ -6,6 +6,7 @@ import model.GameData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 public class GameSQLDAO {
     private GameSerialization gameSerializer;
@@ -31,6 +32,26 @@ public class GameSQLDAO {
         }
     }
 
+    public GameData createGame(String gameName) throws DataAccessException {
+        int gameId = generateGameID();
+        ChessGame chessGame = new ChessGame();
+        String game = gameSerializer.serializeGame(chessGame);
+        String createSQL = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game) " +
+                "VALUES (?,?,?,?,?)";
+        try (var connection = DatabaseManager.getConnection();
+             var prepStatement = connection.prepareStatement(createSQL)) {
+            prepStatement.setInt(1, gameId);
+            prepStatement.setString(2, null);
+            prepStatement.setString(3, null);
+            prepStatement.setString(4, gameName);
+            prepStatement.setString(5, game);
+            prepStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return
+    }
+
     public Collection<GameData> listAll() throws DataAccessException {
         ArrayList<GameData> games = new ArrayList<>();
         String listSQL = "SELECT * FROM games";
@@ -52,5 +73,26 @@ public class GameSQLDAO {
             throw new DataAccessException(e.getMessage());
         }
         return games;
+    }
+
+    private int generateGameID() throws DataAccessException {
+        Random random = new Random();
+        int ID = 0;
+        boolean unique = false;
+        while (!unique) {
+            ID = 1000 + random.nextInt(9000);
+            String checkUnique = "SELECT COUNT(*) FROM games WHERE gameID = ?";
+            try (var connection = DatabaseManager.getConnection();
+                 var prepStatement = connection.prepareStatement(checkUnique)) {
+                prepStatement.setInt(1, ID);
+                var results = prepStatement.executeQuery();
+                if (results.next() && results.getInt(1) == 0) {
+                    unique = true;
+                }
+            } catch (SQLException e) {
+                throw new DataAccessException(e.getMessage());
+            }
+        }
+        return ID;
     }
 }
