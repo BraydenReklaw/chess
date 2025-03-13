@@ -391,3 +391,38 @@ MySQL workbench (also download), a GUI for mySQL.
 remember `grant` for permission handling and whatnot
 
 LOOK AT SECURING PASSWORDS
+
+## Phase 5
+
+Draw Menus and handle Input, Draw Chess Board, Invoke ServerAPI endpoints, write tests. To test with mutliple instances of a server running at once, edit configurations, modify, allow multiple instances.
+phase 6 will implement socket so cross updating is usable. 
+Play Game and Observe should just draw the board for now.
+
+if login option is selected, create loginRequest object, pass to login() which should probably return a login result. because register returns the same, loginresult can be used here as well.
+Think of what your handlers do for Server. ServerFacade will need to call Server at some point.
+
+Look at the example code for how to draw a board([TicTacToe](https://github.com/softwareconstruction240/softwareconstruction/blob/main/instruction/console-ui/example-code/src/ui/TicTacToe.java)) and other console output stuff
+
+Suggested file structure: 
+Client inside UI draws menu. ChessBoard inside UI draws chessboard. Client depends on chessboard. This allows logic separation. ServerFacade would contain the server call methods, called by UI Client.
+ServerFacade would then call Client Communicator, which would actually make server and HTTP calls.
+
+Consider studying enum logic for determining if I am drawing a white or black board
+
+### menus
+
+No strict design Guidelines, just need to make sure it is readable and usable. Think back to cs110. display options, handle specific input. Don't explicitly show game ids, authtokens, etc.
+
+If authtoken = null, not logged in. Use this a semi-boolean flag. use a scanner to wait for and accept input. 
+
+Play Game and Observe Game should draw a board (The only ones to do so).
+
+### ChessBoard
+
+Your color should be "closest" to you (black on bottom if you are black player). reorientate board as necessary for this.
+
+Draw row by row. Call methods, not 1 long logic map. Set background color of \n to desired color (like white), because rest of line will be that color.
+Consider logic that checks if piece present on a space if not. consider creating a matrix of pieces. Start with a main method that will be tossed out later. Client will call from menu eventually, but
+the main method will allow you to run and render as you test.
+
+Try using unicode chess characters instead of letters. You'll want to set Terminal font to Monospace and use Em Space (file - settings - editor - colorScheme - console font)
