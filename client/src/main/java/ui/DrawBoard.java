@@ -12,11 +12,8 @@ import static ui.EscapeSequences.*;
 
 public class DrawBoard {
 
-    public static void main(String[] args) {
+    public static void DrawBoard(String playerColor, ChessBoard defaultBoard) {
         var printOut = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        String playerColor = "WHITE";
-        ChessBoard defaultBoard = new ChessBoard();
-        defaultBoard.resetBoard();
         drawChessboard(printOut, playerColor, defaultBoard);
 
         printOut.print(RESET_BG_COLOR);
