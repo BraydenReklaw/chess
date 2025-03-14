@@ -19,8 +19,6 @@ public class DrawBoard {
         defaultBoard.resetBoard();
         drawChessboard(printOut, playerColor, defaultBoard);
 
-        printOut.println();
-
         printOut.print(RESET_BG_COLOR);
         printOut.print(RESET_TEXT_COLOR);
     }
