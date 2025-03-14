@@ -14,7 +14,7 @@ public class DrawBoard {
 
     public static void main(String[] args) {
         var printOut = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        String playerColor = "BLACK";
+        String playerColor = "WHITE";
         ChessBoard defaultBoard = new ChessBoard();
         defaultBoard.resetBoard();
         drawChessboard(printOut, playerColor, defaultBoard);
@@ -76,7 +76,8 @@ public class DrawBoard {
         } else {
             whiteTile = true;
         }
-        for (int i = 0; i < 8; i++) {
+        printOut.print(SET_TEXT_COLOR_WHITE);
+        for (int i = 1; i < 9; i++) {
             if (whiteTile) {
                 printOut.print(SET_BG_COLOR_LIGHT_GREY);
                 whiteTile = false;
@@ -84,10 +85,7 @@ public class DrawBoard {
                 printOut.print(SET_BG_COLOR_DARK_GREY);
                 whiteTile = true;
             }
-            ChessPiece piece = chessBoard.getPiece(new ChessPosition(row, i));
-            if (piece != null) {
-                printOut.print(EMPTY);
-            }
+            drawTile(printOut, chessBoard, row, i);
         }
         drawRowNum(printOut, row);
         printOut.println();
@@ -97,5 +95,28 @@ public class DrawBoard {
         printOut.print(SET_BG_COLOR_WHITE);
         printOut.print(SET_TEXT_COLOR_BLACK);
         printOut.print(" " + row + " ");
+    }
+
+    private static void drawTile(PrintStream printOut, ChessBoard chessBoard, int row, int col) {
+        ChessPiece piece = chessBoard.getPiece(new ChessPosition(row, col));
+        if (piece == null) {
+            printOut.print(EMPTY);
+        } else {
+            String printArg = piece.getTeamColor() + "_" + piece.getPieceType();
+            switch (printArg) {
+                case "WHITE_KING" -> printOut.print(WHITE_KING);
+                case "WHITE_QUEEN" -> printOut.print(WHITE_QUEEN);
+                case "WHITE_ROOK" -> printOut.print(WHITE_ROOK);
+                case "WHITE_BISHOP" -> printOut.print(WHITE_BISHOP);
+                case "WHITE_KNIGHT" -> printOut.print(WHITE_KNIGHT);
+                case "WHITE_PAWN" -> printOut.print(WHITE_PAWN);
+                case "BLACK_KING" -> printOut.print(BLACK_KING);
+                case "BLACK_QUEEN" -> printOut.print(BLACK_QUEEN);
+                case "BLACK_ROOK" -> printOut.print(BLACK_ROOK);
+                case "BLACK_KNIGHT" -> printOut.print(BLACK_KNIGHT);
+                case "BLACK_BISHOP" -> printOut.print(BLACK_BISHOP);
+                case "BLACK_PAWN" -> printOut.print(BLACK_PAWN);
+            }
+        }
     }
 }
