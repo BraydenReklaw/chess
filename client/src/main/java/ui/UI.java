@@ -68,6 +68,7 @@ public class UI {
                 switch (selection) {
                     case 6 -> {
 //                        UserLogout();
+                        System.out.println("Logging Out");
                         return;
                     }
                     case 5 -> {

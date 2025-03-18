@@ -426,3 +426,17 @@ Consider logic that checks if piece present on a space if not. consider creating
 the main method will allow you to run and render as you test.
 
 Try using unicode chess characters instead of letters. You'll want to set Terminal font to Monospace and use Em Space (file - settings - editor - colorScheme - console font)
+
+### Server from Client
+
+Client -> web -> Server HTTP request -> <- HTTP response. connection required. Use Streams (JSON strings). GSON conversion
+required for class instances. See the Get and Post examples from slides. Authorization Header required for most functions
+and relevent endpoints. Headers are only necessary if you will be doing something with them.
+
+trickiest thing is reading from the InputStream returned by connection. It must be read and then used as needed/required
+In the instance of POST, you will need to build a request body to OutputStream after connect. See IO lecture for stream 
+handling. Attach writer to stream and reader to writer
+
+http://hostname:port/PATH - likely use localhost as hostname
+
+server facade would have 7 methods for the 7 functions, and client communicator would do the actual GET POST HTTP stuff
