@@ -1,29 +1,50 @@
 package client;
 
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
+import model.AuthData;
+import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
+import service.ClearService;
+import ui.Communicator;
+import ui.ServerFacade;
+
+import java.io.IOException;
 
 
 public class ServerFacadeTests {
+
+    private static UserData testUser;
+    private static ServerFacade facade;
+    private static Communicator communicator;
 
     private static Server server;
 
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
+        var port = server.run(8810);
         System.out.println("Started test HTTP server on " + port);
+
+        testUser = new UserData("user1", "password", "email");
+
     }
 
     @AfterAll
-    static void stopServer() {
+    static void stopServer() throws IOException {
+        communicator.delete("/db");
         server.stop();
     }
-
 
     @Test
     public void sampleTest() {
         Assertions.assertTrue(true);
     }
 
+    @Test
+    public void successfulRegister() throws IOException {
+        String response = facade.register(testUser.username(), null, testUser.email());
+        Assertions.assertEquals(response, "Registered");
+    }
 }

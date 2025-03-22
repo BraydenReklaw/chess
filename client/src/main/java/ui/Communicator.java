@@ -8,10 +8,10 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 public class Communicator {
-    private static String ServerURL = "http://localhost:81810";
+    private static String ServerURL = "http://localhost:8810";
 
     public static String post(String endpoint, String jsonInput) throws IOException {
-        BufferedReader reader = null;
+        BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
         URL url = new URL(ServerURL + endpoint);
@@ -34,7 +34,8 @@ public class Communicator {
                 response.append(responseLine.trim());
             }
             return response.toString();
-        } else {
+        }
+        else {
             reader = new BufferedReader(new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8));
             String responseLine;
             while ((responseLine = reader.readLine()) != null) {
@@ -42,5 +43,15 @@ public class Communicator {
             }
             return response.toString();
         }
+    }
+
+    public static void delete(String endpoint) throws IOException {
+        URL url = new URL(ServerURL + endpoint);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setConnectTimeout(5000);
+        connection.setRequestMethod("DELETE");
+        connection.connect();
+        connection.getResponseCode();
     }
 }

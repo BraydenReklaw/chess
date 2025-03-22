@@ -43,7 +43,8 @@ public class UI {
                         if (user != null) {
                             PostLogIn(scanner, user);
                         } else {
-                          System.out.println("Oops, something went wrong");
+                          System.out.println("Oops, something went wrong. Username may be taken or an error occured. " +
+                                  "Please try again");
                         }
                     }
                     default -> {
@@ -108,7 +109,7 @@ public class UI {
         if (response.equals("Registered")) {
             return username;
         }
-        return null;
+        return response;
     }
 
     public static void ListGames() {
