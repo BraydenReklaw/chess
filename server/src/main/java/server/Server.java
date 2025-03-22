@@ -4,8 +4,6 @@ import spark.*;
 import dataaccess.*;
 import service.*;
 
-import java.sql.SQLException;
-
 public class Server {
     UserSQLDAO userDataAccess;
     AuthSQLDAO authDataAccess;

@@ -3,19 +3,20 @@ package ui;
 import chess.ChessGame;
 import model.GameData;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class UI {
     private static ChessGame defaultGame = new ChessGame();
     private static GameData defaultGameData = new GameData(1234, null, null, "game1", defaultGame);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         PreLogIn(scanner);
         scanner.close();
     }
 
-    public static void PreLogIn(Scanner scanner) {
+    public static void PreLogIn(Scanner scanner) throws IOException {
         int selection = 0;
         while (selection != 4) {
             System.out.println("Welcome! Make a Selection");
@@ -38,8 +39,12 @@ public class UI {
                         PostLogIn(scanner, "Baymax");
                     }
                     case 2 -> {
-//                        UserRegister();
-                        PostLogIn(scanner, "Baymax");
+                        String user = userRegister(scanner);
+                        if (user != null) {
+                            PostLogIn(scanner, user);
+                        } else {
+                          System.out.println("Oops, something went wrong");
+                        }
                     }
                     default -> {
                         System.out.println("Invalid Choice. Select 1, 2, 3, or 4.");
@@ -90,6 +95,20 @@ public class UI {
                 }
             }
         }
+    }
+
+    public static String userRegister(Scanner scanner) throws IOException {
+        System.out.println("Username: ");
+        String username = scanner.next();
+        System.out.println("Password: ");
+        String password = scanner.next();
+        System.out.println("Email: ");
+        String email = scanner.next();
+        String response = ServerFacade.register(username, password, email);
+        if (response.equals("Registered")) {
+            return username;
+        }
+        return null;
     }
 
     public static void ListGames() {
