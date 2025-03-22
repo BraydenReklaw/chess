@@ -6,8 +6,6 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import ui.Communicator;
 import ui.ServerFacade;
-import ui.UI;
-
 import java.io.IOException;
 
 
@@ -31,7 +29,7 @@ public class ServerFacadeTests {
 
     @AfterEach
     public void tearDown() throws IOException {
-        Communicator.delete("/db");
+        Communicator.testDelete("/db");
     }
 
     @Test
@@ -57,5 +55,19 @@ public class ServerFacadeTests {
     @Test
     public void loginNonExistingUser() throws IOException {
         Assertions.assertNull(ServerFacade.logIn(testUser.username(), testUser.password()));
+    }
+
+    @Test
+    public void successfulLogout() throws IOException {
+        AuthData token = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertNotNull(token);
+        ServerFacade.logOut(token.authToken());
+        Assertions.assertNotNull(ServerFacade.logIn(testUser.username(), testUser.password()));
+    }
+
+    @Test
+    public void logoutWithBadToken() throws IOException {
+        ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertNotEquals("{}", Communicator.delete("/session", "abcd"));
     }
 }

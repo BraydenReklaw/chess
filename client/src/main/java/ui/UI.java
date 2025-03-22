@@ -62,7 +62,7 @@ public class UI {
         }
     }
 
-    public static void PostLogIn(Scanner scanner, AuthData user) {
+    public static void PostLogIn(Scanner scanner, AuthData user) throws IOException {
 
         int selection = 0;
         while (selection != 6) {
@@ -79,12 +79,14 @@ public class UI {
                 selection = scanner.nextInt();
                 switch (selection) {
                     case 6 -> {
-//                        UserLogout();
+                        userLogout(user);
                         System.out.println("Logging Out");
                         return;
                     }
                     case 5 -> {
-                        System.out.println("Getting Help");
+                        System.out.println("To create a Game, select 1 and enter a name. To Play or Observe a Game, " +
+                                "first select List Games with 2, then give a Game number to Play Game or Observe " +
+                                "Game to join or watch that game. Select 6 to Logout");
                     }
                     case 4 -> {
                         ObserveGame();
@@ -122,6 +124,10 @@ public class UI {
         String password = scanner.next();
         AuthData response = ServerFacade.logIn(username, password);
         return response;
+    }
+
+    public static void userLogout(AuthData authData) throws IOException {
+        ServerFacade.logOut(authData.authToken());
     }
 
     public static void ListGames() {

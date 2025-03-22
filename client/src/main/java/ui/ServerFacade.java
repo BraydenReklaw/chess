@@ -40,4 +40,8 @@ public class ServerFacade {
             return null;
         }
     }
+
+    public static void logOut(String authToken) throws IOException {
+        Communicator.delete("/session", authToken);
+    }
 }
