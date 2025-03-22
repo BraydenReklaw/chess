@@ -1,5 +1,6 @@
 package client;
 
+import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -13,42 +14,48 @@ import java.io.IOException;
 public class ServerFacadeTests {
 
     private static UserData testUser;
-    private static ServerFacade facade;
-    private static Communicator communicator;
-
     private static Server server;
 
     @BeforeAll
-    public static void init() {
+    public static void init(){
         server = new Server();
         var port = server.run(8810);
         System.out.println("Started test HTTP server on " + port);
-
         testUser = new UserData("user1", "password", "email");
-
     }
 
     @AfterAll
-    static void stopServer() throws IOException {
-        communicator.delete("/db");
+    static void stopServer() {
         server.stop();
     }
 
-    @Test
-    public void sampleTest(){
-        Assertions.assertTrue(true);
+    @AfterEach
+    public void tearDown() throws IOException {
+        Communicator.delete("/db");
     }
 
     @Test
     public void successfulRegister() throws IOException {
-        String response = facade.register(testUser.username(), null, testUser.email());
-        Assertions.assertEquals(response, "Registered");
+        AuthData response = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertNotNull(response);
     }
 
     @Test
     public void registerExistingUser() throws IOException {
-        facade.register(testUser.username(), testUser.password(), testUser.email());
-        Assertions.assertNotEquals("Registered", facade.register(testUser.username(),
+        ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertNull(ServerFacade.register(testUser.username(),
                 testUser.password(), testUser.email()));
+    }
+
+    @Test
+    public void successfulLogin() throws IOException {
+        ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        AuthData response = ServerFacade.logIn(testUser.username(), testUser.password());
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
+    public void loginNonExistingUser() throws IOException {
+        Assertions.assertNull(ServerFacade.logIn(testUser.username(), testUser.password()));
     }
 }

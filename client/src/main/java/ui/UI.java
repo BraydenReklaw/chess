@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import model.AuthData;
 import model.GameData;
 import java.io.IOException;
 import java.util.Scanner;
@@ -35,7 +36,7 @@ public class UI {
                         System.out.println("Exited");
                     }
                     case 1 -> {
-                        String user = userLogin(scanner);
+                        AuthData user = userLogin(scanner);
                         if (user != null){
                             PostLogIn(scanner, user);
                         } else {
@@ -44,7 +45,7 @@ public class UI {
                         }
                     }
                     case 2 -> {
-                        String user = userRegister(scanner);
+                        AuthData user = userRegister(scanner);
                         if (user != null) {
                             PostLogIn(scanner, user);
                         } else {
@@ -61,11 +62,11 @@ public class UI {
         }
     }
 
-    public static void PostLogIn(Scanner scanner, String user) {
+    public static void PostLogIn(Scanner scanner, AuthData user) {
 
         int selection = 0;
         while (selection != 6) {
-            System.out.println(user + " logged in. Make a selection:");
+            System.out.println(user.username() + " logged in. Make a selection:");
             System.out.println("1. Create a Game");
             System.out.println("2. List Games");
             System.out.println("3. Play Game");
@@ -103,30 +104,24 @@ public class UI {
         }
     }
 
-    public static String userRegister(Scanner scanner) throws IOException {
+    public static AuthData userRegister(Scanner scanner) throws IOException {
         System.out.print("Username: ");
         String username = scanner.next();
         System.out.print("Password: ");
         String password = scanner.next();
         System.out.print("Email: ");
         String email = scanner.next();
-        String response = ServerFacade.register(username, password, email);
-        if (response.equals("Registered")) {
-            return username;
-        }
-        return null;
+        AuthData response = ServerFacade.register(username, password, email);
+        return response;
     }
 
-    public static String userLogin(Scanner scanner) throws IOException {
+    public static AuthData userLogin(Scanner scanner) throws IOException {
         System.out.print("Username: ");
         String username = scanner.next();
         System.out.print("Password: ");
         String password = scanner.next();
-        String response = ServerFacade.logIn(username, password);
-        if (response.equals("Logged in")) {
-            return username;
-        }
-        return null;
+        AuthData response = ServerFacade.logIn(username, password);
+        return response;
     }
 
     public static void ListGames() {
