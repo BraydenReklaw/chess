@@ -99,7 +99,7 @@ public class UI {
                         games = listGames(user.authToken());
                     }
                     case 1 -> {
-//                        CreateGame();
+                        createGame(scanner, user.authToken());
                     }
                     default -> System.out.println("Invalid Choice, select a number.");
                 }
@@ -133,7 +133,10 @@ public class UI {
 
     public static Collection<GameData> listGames(String token) throws IOException {
         Collection<GameData> games = ServerFacade.listGames(token);
-        if (games == null || games.isEmpty()) {
+        if (games == null) {
+            System.out.println("An error has occurred.");
+        }
+        if (games.isEmpty()) {
             System.out.println("There are currently 0 games running.");
             return null;
         }
@@ -149,6 +152,15 @@ public class UI {
             index++;
         }
         return games;
+    }
+
+    public static void createGame(Scanner scanner, String Token) throws IOException {
+        System.out.print("Name of Game: ");
+        String gameName = scanner.next();
+        String response = ServerFacade.createGame(Token, gameName);
+        if (response != null) {
+            System.out.println("An error has occurred, please try again.");
+        }
     }
 
     public static void ObserveGame() {

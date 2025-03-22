@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 public class Communicator {
     private static String ServerURL = "http://localhost:8810";
 
-    public static String post(String endpoint, String jsonInput) throws IOException {
+    public static String post(String endpoint, String jsonInput, String token) throws IOException {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
@@ -19,6 +19,9 @@ public class Communicator {
 
         connection.setConnectTimeout(5000);
         connection.setRequestMethod("POST");
+        if (token != null) {
+            connection.setRequestProperty("authorization", token);
+        }
         connection.setDoOutput(true);
 
         connection.connect();

@@ -14,7 +14,7 @@ public class ServerFacade {
         String jsonInput = String.format("{\"username\": \"%s\", \"password\": \"%s\", \"email\": \"%s\"}",
                                         username, password, email);
 
-        String response = Communicator.post("/user", jsonInput);
+        String response = Communicator.post("/user", jsonInput, null);
 
         JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
 
@@ -30,7 +30,7 @@ public class ServerFacade {
     public static AuthData logIn(String username, String password) throws IOException {
         String jsonInput = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
 
-        String response = Communicator.post("/session", jsonInput);
+        String response = Communicator.post("/session", jsonInput, null);
 
         JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
 
@@ -64,5 +64,18 @@ public class ServerFacade {
         }
 
         return games;
+    }
+
+    public static String createGame(String authToken, String gameName) throws IOException {
+        String jsonInput = String.format("{\"gameName\": \"%s\"}", gameName);
+
+        String response = Communicator.post("/game", jsonInput, authToken);
+
+        JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
+
+        if (jsonResponse.has("message")) {
+            return "Error";
+        }
+        return null;
     }
 }
