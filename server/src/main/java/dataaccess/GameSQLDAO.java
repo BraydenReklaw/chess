@@ -101,32 +101,18 @@ public class GameSQLDAO {
         return null;
     }
 
-    public void updateGame(AuthData authData, String playerColor, GameData gameToUpdate) throws DataAccessException {
+    public void updateGame(GameData gameToUpdate) throws DataAccessException {
         String setSQL = "UPDATE games SET whiteUsername = ?, blackUsername = ?, game = ? WHERE gameID = ?";
         int updatedRows;
-        if (playerColor.equals("WHITE")) {
-            try (var connection = DatabaseManager.getConnection();
-                 var prepStatement = connection.prepareStatement(setSQL)) {
-                prepStatement.setString(1, authData.username());
-                prepStatement.setString(2, gameToUpdate.blackUsername());
-                prepStatement.setString(3, gameSerializer.serializeGame(gameToUpdate.game()));
-                prepStatement.setInt(4, gameToUpdate.gameID());
-                updatedRows = prepStatement.executeUpdate();
-            } catch (SQLException e) {
-                throw new DataAccessException(e.getMessage());
-            }
-        } else {
-            try (var connection = DatabaseManager.getConnection();
-                 var prepStatement = connection.prepareStatement(setSQL)) {
-                prepStatement.setString(1, gameToUpdate.whiteUsername());
-                prepStatement.setString(2, authData.username());
-                prepStatement.setString(3, gameSerializer.serializeGame(gameToUpdate.game()));
-                prepStatement.setInt(4, gameToUpdate.gameID());
-                prepStatement.executeUpdate();
-                updatedRows = prepStatement.executeUpdate();
-            } catch (SQLException e) {
-                throw new DataAccessException(e.getMessage());
-            }
+        try (var connection = DatabaseManager.getConnection();
+             var prepStatement = connection.prepareStatement(setSQL)) {
+            prepStatement.setString(1, gameToUpdate.whiteUsername());
+            prepStatement.setString(2, gameToUpdate.blackUsername());
+            prepStatement.setString(3, gameSerializer.serializeGame(gameToUpdate.game()));
+            prepStatement.setInt(4, gameToUpdate.gameID());
+            updatedRows = prepStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
         }
         if (updatedRows == 0) {
             throw new DataAccessException("No Update Made");

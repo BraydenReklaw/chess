@@ -45,9 +45,11 @@ public class GameService {
             throw new DataAccessException("no game");
         }
         if (game.whiteUsername() == null && playerColor.equals("WHITE")) {
-            gameDataAccess.updateGame(authData, playerColor, game);
+            GameData updatedGame = new GameData(game.gameID(), authData.username(), game.blackUsername(), game.gameName(), game.game());
+            gameDataAccess.updateGame(updatedGame);
         } else if (game.blackUsername() == null && playerColor.equals("BLACK")) {
-            gameDataAccess.updateGame(authData, playerColor, game);
+            GameData updatedGame = new GameData(game.gameID(), game.whiteUsername(), authData.username(), game.gameName(), game.game());
+            gameDataAccess.updateGame(updatedGame);
         } else {
             throw new DataAccessException("taken");
         }

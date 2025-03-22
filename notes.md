@@ -440,3 +440,7 @@ handling. Attach writer to stream and reader to writer
 http://hostname:port/PATH - likely use localhost as hostname
 
 server facade would have 7 methods for the 7 functions, and client communicator would do the actual GET POST HTTP stuff
+
+### Logging
+
+creates a file of all code activities a program engages in. Great replacement for print-debugging
