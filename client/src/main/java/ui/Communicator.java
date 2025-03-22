@@ -73,7 +73,7 @@ public class Communicator {
         return response.toString();
     }
 
-    public static String get(String endpoint, String jsonInput) throws IOException {
+    public static String get(String endpoint, String token) throws IOException {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
@@ -82,9 +82,40 @@ public class Communicator {
 
         connection.setConnectTimeout(5000);
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("authorization", jsonInput);
+        connection.setRequestProperty("authorization", token);
 
         connection.connect();
+
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+        } else {
+            reader = new BufferedReader(new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8));
+        }
+        String responseLine;
+        while ((responseLine = reader.readLine()) != null) {
+            response.append(responseLine.trim());
+        }
+        return response.toString();
+    }
+
+    public static String put(String endpoint, String jsonInput, String Token) throws IOException {
+        BufferedReader reader;
+        StringBuilder response = new StringBuilder();
+
+        URL url = new URL(ServerURL + endpoint);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setConnectTimeout(5000);
+        connection.setRequestMethod("PUT");
+        connection.setRequestProperty("authorization", Token);
+        connection.setDoOutput(true);
+
+        connection.connect();
+
+        try (OutputStream requestBody = connection.getOutputStream()) {
+            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+            requestBody.write(input, 0, input.length);
+        }
 
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));

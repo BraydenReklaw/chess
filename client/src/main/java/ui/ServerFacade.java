@@ -78,4 +78,17 @@ public class ServerFacade {
         }
         return null;
     }
+
+    public static String joinGame(String authToken, String color, int gameID) throws IOException {
+        String jsonInput = String.format("{\"playerColor\": \"%s\", \"gameID\": %d}", color, gameID);
+
+        String response = Communicator.put("/game", jsonInput, authToken);
+
+        JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
+
+        if (jsonResponse.has("message")) {
+            return "Error";
+        }
+        return null;
+    }
 }

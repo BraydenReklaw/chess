@@ -67,8 +67,8 @@ public class UI {
 
     public static void PostLogIn(Scanner scanner, AuthData user) throws IOException {
         Collection<GameData> games = null;
-        int selection = 0;
-        while (selection != 6) {
+        int selection;
+        while (true) {
             System.out.println(user.username() + " logged in. Make a selection:");
             System.out.println("1. Create a Game");
             System.out.println("2. List Games");
@@ -88,14 +88,14 @@ public class UI {
                     }
                     case 5 -> {
                         System.out.println("To create a Game, select 1 and enter a name. To Play or Observe a Game, " +
-                                "first select List Games with 2, then give a Game number to Play Game or Observe " +
+                                "first select List Games with 2, then give a game number to Play Game or Observe " +
                                 "Game to join or watch that game. Select 6 to Logout.");
                     }
                     case 4 -> {
-                            ObserveGame(scanner, games);
+                        observeGame(scanner, games);
                     }
                     case 3 -> {
-//                        PlayGame();
+                        playGame(scanner, user.authToken(), games);
                     }
                     case 2 -> {
                         games = listGames(user.authToken());
@@ -116,8 +116,7 @@ public class UI {
         String password = scanner.next();
         System.out.print("Email: ");
         String email = scanner.next();
-        AuthData response = ServerFacade.register(username, password, email);
-        return response;
+        return ServerFacade.register(username, password, email);
     }
 
     public static AuthData userLogin(Scanner scanner) throws IOException {
@@ -125,8 +124,7 @@ public class UI {
         String username = scanner.next();
         System.out.print("Password: ");
         String password = scanner.next();
-        AuthData response = ServerFacade.logIn(username, password);
-        return response;
+        return ServerFacade.logIn(username, password);
     }
 
     public static void userLogout(AuthData authData) throws IOException {
@@ -137,10 +135,11 @@ public class UI {
         Collection<GameData> games = ServerFacade.listGames(token);
         if (games == null) {
             System.out.println("An error has occurred.");
-        }
-        if (games.isEmpty()) {
-            System.out.println("There are currently 0 games running.");
             return null;
+        }
+        else if (games.isEmpty()) {
+            System.out.println("There are currently 0 games running.");
+            return games;
         }
         System.out.printf("There are currently %d game(s) running", games.size());
         System.out.println();
@@ -167,7 +166,7 @@ public class UI {
 
     public static void observeGame(Scanner scanner, Collection<GameData> games) {
         if (games.isEmpty()) {
-            System.out.println("There are no games to Observe right now");
+            System.out.println("There are no games to Observe right now. Try List Games again.");
             return;
         }
         System.out.print("Select a game number: ");
@@ -186,5 +185,46 @@ public class UI {
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid number.");
         }
+    }
+
+    public static void playGame(Scanner scanner, String token, Collection<GameData> games) {
+        if (games.isEmpty()) {
+            System.out.println("There are no games to Play right now. Try List Games again.");
+            return;
+        }
+        System.out.print("Select a game number: ");
+        String selection = scanner.next();
+        try{
+            int index = Integer.parseInt(selection);
+            if (index > games.size()) {
+                System.out.println("This is not a valid game. Select another");
+                return;
+            }
+            List<GameData> gameList = new ArrayList<>(games);
+
+            GameData game = gameList.get(index - 1);
+
+            System.out.printf("Current Players: White: %s, Black %s",
+                    game.whiteUsername() != null ? game.whiteUsername() : "OPEN",
+                    game.blackUsername() != null ? game.blackUsername() : "OPEN");
+            System.out.print("Select a Color to play as (WHITE or BLACK): ");
+            String player = scanner.next();
+            if (player.equals("WHITE") || player.equals("BLACK")) {
+                String response = ServerFacade.joinGame(token, player, game.gameID());
+                if (response != null) {
+                    System.out.println("An error occurred. Double check that you have chosen the right Game " +
+                            "and color to play.");
+                }
+                DrawBoard.DrawBoard(player, game.game().getBoard());
+            } else {
+                System.out.println("Invalid input. Please enter a valid color (WHITE / BLACK).");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 }
