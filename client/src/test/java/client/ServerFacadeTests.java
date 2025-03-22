@@ -1,6 +1,7 @@
 package client;
 
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -8,6 +9,9 @@ import ui.Communicator;
 import ui.ServerFacade;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public class ServerFacadeTests {
@@ -97,5 +101,21 @@ public class ServerFacadeTests {
     public void listNoGames() throws IOException {
         AuthData token = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
         Assertions.assertEquals(0, ServerFacade.listGames(token.authToken()).size());
+    }
+
+    @Test
+    public void successfulJoin()  throws IOException {
+        AuthData token = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        ServerFacade.createGame(token.authToken(), "game1");
+        Collection<GameData> games = ServerFacade.listGames(token.authToken());
+        List<GameData> gameList = new ArrayList<>(games);
+        GameData game = gameList.getFirst();
+        Assertions.assertNull(ServerFacade.joinGame(token.authToken(), "WHITE", game.gameID()));
+    }
+
+    @Test
+    public void noGameToJoin() throws IOException {
+        AuthData token = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertNotNull(ServerFacade.joinGame(token.authToken(), "WHITE", 1234));
     }
 }
