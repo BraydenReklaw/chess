@@ -70,6 +70,31 @@ public class Communicator {
         return response.toString();
     }
 
+    public static String get(String endpoint, String jsonInput) throws IOException {
+        BufferedReader reader;
+        StringBuilder response = new StringBuilder();
+
+        URL url = new URL(ServerURL + endpoint);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setConnectTimeout(5000);
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("authorization", jsonInput);
+
+        connection.connect();
+
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+        } else {
+            reader = new BufferedReader(new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8));
+        }
+        String responseLine;
+        while ((responseLine = reader.readLine()) != null) {
+            response.append(responseLine.trim());
+        }
+        return response.toString();
+    }
+
     // this is to facilitate ServerFacadeTests database cleanup
     public static void testDelete(String endpoint) throws IOException {
         URL url = new URL(ServerURL + endpoint);

@@ -1,10 +1,12 @@
 package ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import model.AuthData;
+import model.GameData;
 
 public class ServerFacade {
 
@@ -43,5 +45,24 @@ public class ServerFacade {
 
     public static void logOut(String authToken) throws IOException {
         Communicator.delete("/session", authToken);
+    }
+
+    public static Collection<GameData> listGames(String authToken) throws IOException {
+        String response = Communicator.get("/game", authToken);
+
+        JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
+
+        if (!jsonResponse.has("games")) {
+            return null;
+        }
+        JsonArray gamesArray = jsonResponse.getAsJsonArray("games");
+        Collection<GameData> games = new ArrayList<>();
+
+        for (JsonElement game : gamesArray) {
+            GameData gameData = new Gson().fromJson(game, GameData.class);
+            games.add(gameData);
+        }
+
+        return games;
     }
 }

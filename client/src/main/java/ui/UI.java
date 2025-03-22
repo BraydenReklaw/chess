@@ -4,6 +4,7 @@ import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class UI {
@@ -63,7 +64,7 @@ public class UI {
     }
 
     public static void PostLogIn(Scanner scanner, AuthData user) throws IOException {
-
+        Collection<GameData> games;
         int selection = 0;
         while (selection != 6) {
             System.out.println(user.username() + " logged in. Make a selection:");
@@ -95,7 +96,7 @@ public class UI {
 //                        PlayGame();
                     }
                     case 2 -> {
-                        ListGames();
+                        games = listGames(user.authToken());
                     }
                     case 1 -> {
 //                        CreateGame();
@@ -130,14 +131,24 @@ public class UI {
         ServerFacade.logOut(authData.authToken());
     }
 
-    public static void ListGames() {
-        System.out.println("There are currently 1 Game(s):");
-        System.out.print("1. ");
-        System.out.print(defaultGameData.gameName());
-        System.out.print(", players: White: ");
-        System.out.print(defaultGameData.whiteUsername());
-        System.out.print(", Black: ");
-        System.out.println(defaultGameData.blackUsername());
+    public static Collection<GameData> listGames(String token) throws IOException {
+        Collection<GameData> games = ServerFacade.listGames(token);
+        if (games == null || games.isEmpty()) {
+            System.out.println("There are currently 0 games running.");
+            return null;
+        }
+        System.out.printf("There are currently %d game(s) running", games.size());
+        System.out.println();
+
+        int index = 1;
+        for (GameData game : games) {
+            System.out.printf("%d. Name: %s, White Player: %s, Black Player: %s",
+                    index, game.gameName(),
+                    game.whiteUsername() != null ? game.whiteUsername() : " ",
+                    game.blackUsername() != null ? game.blackUsername() : " ");
+            index++;
+        }
+        return games;
     }
 
     public static void ObserveGame() {
