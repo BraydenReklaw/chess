@@ -45,6 +45,7 @@ public class Communicator {
         }
     }
 
+    // this is to facilitate ServerFacadeTests database cleanup
     public static void delete(String endpoint) throws IOException {
         URL url = new URL(ServerURL + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

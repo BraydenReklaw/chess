@@ -22,4 +22,19 @@ public class ServerFacade {
             return message;
         }
     }
+
+    public static String logIn(String username, String password) throws IOException {
+        String jsonInput = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
+
+        String response = Communicator.post("/session", jsonInput);
+
+        JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
+
+        if (jsonResponse.has("username")) {
+            return "Logged in";
+        } else {
+            String message = jsonResponse.get("message").getAsString();
+            return message;
+        }
+    }
 }

@@ -1,14 +1,11 @@
 package client;
 
-import dataaccess.DataAccessException;
-import dataaccess.DatabaseManager;
-import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
-import service.ClearService;
 import ui.Communicator;
 import ui.ServerFacade;
+import ui.UI;
 
 import java.io.IOException;
 
@@ -38,7 +35,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void sampleTest() {
+    public void sampleTest(){
         Assertions.assertTrue(true);
     }
 
