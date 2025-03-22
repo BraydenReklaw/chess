@@ -47,4 +47,11 @@ public class ServerFacadeTests {
         String response = facade.register(testUser.username(), null, testUser.email());
         Assertions.assertEquals(response, "Registered");
     }
+
+    @Test
+    public void registerExistingUser() throws IOException {
+        facade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertNotEquals("Registered", facade.register(testUser.username(),
+                testUser.password(), testUser.email()));
+    }
 }
