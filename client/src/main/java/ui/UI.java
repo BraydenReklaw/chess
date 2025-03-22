@@ -4,7 +4,9 @@ import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
@@ -64,7 +66,7 @@ public class UI {
     }
 
     public static void PostLogIn(Scanner scanner, AuthData user) throws IOException {
-        Collection<GameData> games;
+        Collection<GameData> games = null;
         int selection = 0;
         while (selection != 6) {
             System.out.println(user.username() + " logged in. Make a selection:");
@@ -87,10 +89,10 @@ public class UI {
                     case 5 -> {
                         System.out.println("To create a Game, select 1 and enter a name. To Play or Observe a Game, " +
                                 "first select List Games with 2, then give a Game number to Play Game or Observe " +
-                                "Game to join or watch that game. Select 6 to Logout");
+                                "Game to join or watch that game. Select 6 to Logout.");
                     }
                     case 4 -> {
-                        ObserveGame();
+                            ObserveGame(scanner, games);
                     }
                     case 3 -> {
 //                        PlayGame();
@@ -163,7 +165,26 @@ public class UI {
         }
     }
 
-    public static void ObserveGame() {
-        DrawBoard.DrawBoard("WHITE", defaultGame.getBoard());
+    public static void observeGame(Scanner scanner, Collection<GameData> games) {
+        if (games.isEmpty()) {
+            System.out.println("There are no games to Observe right now");
+            return;
+        }
+        System.out.print("Select a game number: ");
+        String selection = scanner.next();
+        try{
+            int index = Integer.parseInt(selection);
+            if (index > games.size()) {
+                System.out.println("This is not a valid game. Select another");
+                return;
+            }
+            List<GameData> gameList = new ArrayList<>(games);
+
+            GameData observeGame = gameList.get(index - 1);
+
+            DrawBoard.DrawBoard("WHITE", observeGame.game().getBoard());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+        }
     }
 }
