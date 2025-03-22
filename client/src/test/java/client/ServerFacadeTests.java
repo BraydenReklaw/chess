@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import ui.Communicator;
 import ui.ServerFacade;
+
 import java.io.IOException;
 
 
@@ -69,5 +70,32 @@ public class ServerFacadeTests {
     public void logoutWithBadToken() throws IOException {
         ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
         Assertions.assertNotEquals("{}", Communicator.delete("/session", "abcd"));
+    }
+
+    @Test
+    public void successfulCreateGame() throws IOException {
+        AuthData token = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertNull(ServerFacade.createGame(token.authToken(), "game1"));
+    }
+
+    @Test
+    public void createGameBadName() throws IOException {
+        AuthData token = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertNotNull(ServerFacade.createGame(token.authToken(), ""));
+    }
+
+    @Test
+    public void successfulListGames() throws IOException {
+        AuthData token = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        ServerFacade.createGame(token.authToken(), "game1");
+        ServerFacade.createGame(token.authToken(), "game2");
+        ServerFacade.createGame(token.authToken(), "game3");
+        Assertions.assertEquals(3, ServerFacade.listGames(token.authToken()).size());
+    }
+
+    @Test
+    public void listNoGames() throws IOException {
+        AuthData token = ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
+        Assertions.assertEquals(0, ServerFacade.listGames(token.authToken()).size());
     }
 }
