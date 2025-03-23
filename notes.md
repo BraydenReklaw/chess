@@ -444,3 +444,22 @@ server facade would have 7 methods for the 7 functions, and client communicator 
 ### Logging
 
 creates a file of all code activities a program engages in. Great replacement for print-debugging
+
+# UI Test Code
+
+if you need to test the ui, create a file in ui folder, give it this code:
+
+package ui;
+
+import server.Server;
+import java.io.IOException;
+
+public class RunUI {
+public static void main(String[] args) throws IOException {
+Server server = new Server();
+var port = server.run(8810);
+System.out.println("Started UItest HTTP server on " + port);
+UI.preLogIn();
+server.stop();
+}
+}
