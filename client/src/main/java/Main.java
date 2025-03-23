@@ -11,10 +11,10 @@ public class Main {
         System.out.println("♕ 240 Chess Client: " + piece);
 
         // these lines are for testing the ui
-        Server server = new Server();
-        var port = server.run(8810);
-        System.out.println("Started test HTTP server on " + port);
-        UI.UI();
-        server.stop();
+//        Server server = new Server();
+//        var port = server.run(8810);
+//        System.out.println("Started test HTTP server on " + port);
+//        UI.UI();
+//        server.stop();
     }
 }
