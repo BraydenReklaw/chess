@@ -1,6 +1,5 @@
 package ui;
 
-import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import java.io.IOException;
@@ -10,11 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class UI {
-    private static ChessGame defaultGame = new ChessGame();
-    private static GameData defaultGameData = new GameData(1234, null, null,
-            "game1", defaultGame);
-
-    public static void main(String[] args) throws IOException {
+    public static void UI() throws IOException {
         Scanner scanner = new Scanner(System.in);
         PreLogIn(scanner);
         scanner.close();
@@ -106,6 +101,7 @@ public class UI {
                     default -> System.out.println("Invalid Choice, select a number.");
                 }
             }
+            System.out.println();
         }
     }
 
@@ -148,10 +144,11 @@ public class UI {
         for (GameData game : games) {
             System.out.printf("%d. Name: %s, White Player: %s, Black Player: %s",
                     index, game.gameName(),
-                    game.whiteUsername() != null ? game.whiteUsername() : " ",
-                    game.blackUsername() != null ? game.blackUsername() : " ");
+                    game.whiteUsername() != null ? game.whiteUsername() : "OPEN",
+                    game.blackUsername() != null ? game.blackUsername() : "OPEN");
             index++;
         }
+        System.out.println();
         return games;
     }
 
@@ -165,7 +162,7 @@ public class UI {
     }
 
     public static void observeGame(Scanner scanner, Collection<GameData> games) {
-        if (games.isEmpty()) {
+        if (games.isEmpty() || games == null) {
             System.out.println("There are no games to Observe right now. Try List Games again.");
             return;
         }
@@ -188,7 +185,7 @@ public class UI {
     }
 
     public static void playGame(Scanner scanner, String token, Collection<GameData> games) {
-        if (games.isEmpty()) {
+        if (games.isEmpty() || games == null) {
             System.out.println("There are no games to Play right now. Try List Games again.");
             return;
         }
