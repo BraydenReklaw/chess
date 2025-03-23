@@ -10,11 +10,17 @@ import model.GameData;
 
 public class ServerFacade {
 
+    public static int port;
+
+    public ServerFacade(int port) {
+        ServerFacade.port = port;
+    }
+
     public static AuthData register(String username, String password, String email) throws IOException {
         String jsonInput = String.format("{\"username\": \"%s\", \"password\": \"%s\", \"email\": \"%s\"}",
                                         username, password, email);
 
-        String response = Communicator.post("/user", jsonInput, null);
+        String response = Communicator.post("/user", jsonInput, null, String.valueOf(port));
 
         JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
 
@@ -30,7 +36,7 @@ public class ServerFacade {
     public static AuthData logIn(String username, String password) throws IOException {
         String jsonInput = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
 
-        String response = Communicator.post("/session", jsonInput, null);
+        String response = Communicator.post("/session", jsonInput, null, String.valueOf(port));
 
         JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
 
@@ -44,11 +50,11 @@ public class ServerFacade {
     }
 
     public static void logOut(String authToken) throws IOException {
-        Communicator.delete("/session", authToken);
+        Communicator.delete("/session", authToken, String.valueOf(port));
     }
 
     public static Collection<GameData> listGames(String authToken) throws IOException {
-        String response = Communicator.get("/game", authToken);
+        String response = Communicator.get("/game", authToken, String.valueOf(port));
 
         JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
 
@@ -69,7 +75,7 @@ public class ServerFacade {
     public static String createGame(String authToken, String gameName) throws IOException {
         String jsonInput = String.format("{\"gameName\": \"%s\"}", gameName);
 
-        String response = Communicator.post("/game", jsonInput, authToken);
+        String response = Communicator.post("/game", jsonInput, authToken, String.valueOf(port));
 
         JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
 
@@ -82,7 +88,7 @@ public class ServerFacade {
     public static String joinGame(String authToken, String color, int gameID) throws IOException {
         String jsonInput = String.format("{\"playerColor\": \"%s\", \"gameID\": %d}", color, gameID);
 
-        String response = Communicator.put("/game", jsonInput, authToken);
+        String response = Communicator.put("/game", jsonInput, authToken, String.valueOf(port));
 
         JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
 
@@ -90,5 +96,10 @@ public class ServerFacade {
             return "Error";
         }
         return null;
+    }
+
+    // This is purely for database clearing
+    public static void testDelete(String endpoint, int port) throws IOException {
+        Communicator.testDelete(endpoint, String.valueOf(port));
     }
 }

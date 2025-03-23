@@ -13,18 +13,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static ui.ServerFacade.port;
+
 
 public class ServerFacadeTests {
 
     private static UserData testUser;
     private static Server server;
+    private static ServerFacade facade;
 
     @BeforeAll
     public static void init() throws IOException {
         server = new Server();
-        var port = server.run(8810);
+        var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        Communicator.testDelete("/db");
+        facade = new ServerFacade(port);
+        ServerFacade.testDelete("/db", port);
         testUser = new UserData("user1", "password", "email");
     }
 
@@ -35,7 +39,7 @@ public class ServerFacadeTests {
 
     @AfterEach
     public void tearDown() throws IOException {
-        Communicator.testDelete("/db");
+        ServerFacade.testDelete("/db", port);
     }
 
     @Test
@@ -74,7 +78,8 @@ public class ServerFacadeTests {
     @Test
     public void logoutWithBadToken() throws IOException {
         ServerFacade.register(testUser.username(), testUser.password(), testUser.email());
-        Assertions.assertNotEquals("{}", Communicator.delete("/session", "abcd"));
+        Assertions.assertNotEquals("{}", Communicator.delete("/session", "abcd",
+                String.valueOf(port)));
     }
 
     @Test

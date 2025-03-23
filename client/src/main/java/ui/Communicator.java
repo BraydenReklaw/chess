@@ -8,13 +8,13 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 public class Communicator {
-    private static String serverURL = "http://localhost:8810";
+    private static String serverURL = "http://localhost:";
 
-    public static String post(String endpoint, String jsonInput, String token) throws IOException {
+    public static String post(String endpoint, String jsonInput, String token, String port) throws IOException {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
-        URL url = new URL(serverURL + endpoint);
+        URL url = new URL(serverURL + port + endpoint);
         HttpURLConnection connection  = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
@@ -48,11 +48,11 @@ public class Communicator {
         }
     }
 
-    public static String delete(String endpoint, String jsonInput) throws IOException {
+    public static String delete(String endpoint, String jsonInput, String port) throws IOException {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
-        URL url = new URL(serverURL + endpoint);
+        URL url = new URL(serverURL + port + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
@@ -73,11 +73,11 @@ public class Communicator {
         return response.toString();
     }
 
-    public static String get(String endpoint, String token) throws IOException {
+    public static String get(String endpoint, String token, String port) throws IOException {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
-        URL url = new URL(serverURL + endpoint);
+        URL url = new URL(serverURL + port + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
@@ -98,11 +98,11 @@ public class Communicator {
         return response.toString();
     }
 
-    public static String put(String endpoint, String jsonInput, String token) throws IOException {
+    public static String put(String endpoint, String jsonInput, String token, String port) throws IOException {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
-        URL url = new URL(serverURL + endpoint);
+        URL url = new URL(serverURL + port + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
@@ -130,8 +130,8 @@ public class Communicator {
     }
 
     // this is to facilitate ServerFacadeTests database cleanup
-    public static void testDelete(String endpoint) throws IOException {
-        URL url = new URL(serverURL + endpoint);
+    public static void testDelete(String endpoint, String port) throws IOException {
+        URL url = new URL(serverURL + port + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
