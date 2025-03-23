@@ -20,10 +20,11 @@ public class ServerFacadeTests {
     private static Server server;
 
     @BeforeAll
-    public static void init(){
+    public static void init() throws IOException {
         server = new Server();
         var port = server.run(8810);
         System.out.println("Started test HTTP server on " + port);
+        Communicator.testDelete("/db");
         testUser = new UserData("user1", "password", "email");
     }
 

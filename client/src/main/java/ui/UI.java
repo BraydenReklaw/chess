@@ -61,7 +61,7 @@ public class UI {
     }
 
     public static void PostLogIn(Scanner scanner, AuthData user) throws IOException {
-        Collection<GameData> games = null;
+        Collection<GameData> games = new ArrayList<>();
         int selection;
         while (true) {
             System.out.println(user.username() + " logged in. Make a selection:");
@@ -147,8 +147,8 @@ public class UI {
                     game.whiteUsername() != null ? game.whiteUsername() : "OPEN",
                     game.blackUsername() != null ? game.blackUsername() : "OPEN");
             index++;
+            System.out.println();
         }
-        System.out.println();
         return games;
     }
 
@@ -211,8 +211,9 @@ public class UI {
                 if (response != null) {
                     System.out.println("An error occurred. Double check that you have chosen the right Game " +
                             "and color to play.");
+                } else {
+                    DrawBoard.DrawBoard(player, game.game().getBoard());
                 }
-                DrawBoard.DrawBoard(player, game.game().getBoard());
             } else {
                 System.out.println("Invalid input. Please enter a valid color (WHITE / BLACK).");
             }
