@@ -22,42 +22,46 @@ public class UI {
             System.out.print("Make a selection (number): ");
 
             if (scanner.hasNext()) {
-                selection = scanner.nextInt();
-                switch (selection) {
-                    case 3 -> System.out.println("To log in, select 1. To create a profile, select 2. " +
-                            "To exit, select 4");
-                    case 4 -> {
-                        System.out.println("Exited");
-                    }
-                    case 1 -> {
-                        AuthData user = userLogin(scanner);
-                        if (user != null){
-                            postLogIn(scanner, user);
-                        }
-                        else {
-                            System.out.print("Oops, something went wrong. Username/password may not exist or ");
-                            System.out.println("an error occurred. Please Try Again");
-                        }
-                    }
-                    case 2 -> {
-                        AuthData user = userRegister(scanner);
-                        if (user != null) {
-                            postLogIn(scanner, user);
-                        } else {
-                          System.out.println("Oops, something went wrong. Username may be taken or an " +
-                                  "error occurred. Please try again");
-                        }
-                    }
-                    default -> {
-                        System.out.println("Invalid Choice. Select 1, 2, 3, or 4.");
-                    }
-                }
-                System.out.println();
+                selection = preLogSelectionHandler(scanner);
             }
         }
         scanner.close();
     }
 
+    public static int preLogSelectionHandler(Scanner scanner) throws IOException {
+        int selection = scanner.nextInt();
+        switch (selection) {
+            case 3 -> System.out.println("To log in, select 1. To create a profile, select 2. " +
+                    "To exit, select 4");
+            case 4 -> {
+                System.out.println("Exited");
+            }
+            case 1 -> {
+                AuthData user = userLogin(scanner);
+                if (user != null){
+                    postLogIn(scanner, user);
+                }
+                else {
+                    System.out.println("Oops, something went wrong. Username/password may not exist or " +
+                            "an error occurred. Please Try Again");
+                }
+            }
+            case 2 -> {
+                AuthData user = userRegister(scanner);
+                if (user != null) {
+                    postLogIn(scanner, user);
+                } else {
+                    System.out.println("Oops, something went wrong. Username may be taken or an " +
+                            "error occurred. Please try again");
+                }
+            }
+            default -> {
+                System.out.println("Invalid Choice. Select 1, 2, 3, or 4.");
+            }
+        }
+        System.out.println();
+        return selection;
+    }
     public static void postLogIn(Scanner scanner, AuthData user) throws IOException {
         Collection<GameData> games = new ArrayList<>();
         int selection;
