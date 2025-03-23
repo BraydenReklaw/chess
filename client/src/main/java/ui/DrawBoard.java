@@ -12,7 +12,7 @@ import static ui.EscapeSequences.*;
 
 public class DrawBoard {
 
-    public static void DrawBoard(String playerColor, ChessBoard defaultBoard) {
+    public static void drawBoard(String playerColor, ChessBoard defaultBoard) {
         var printOut = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         drawChessboard(printOut, playerColor, defaultBoard);
 
@@ -73,31 +73,30 @@ public class DrawBoard {
         if (playerColor.equals("WHITE")) {
             whiteTile = !whiteTile;
             for (int i = 1; i < 9; i++) {
-                if (whiteTile) {
-                    printOut.print(SET_BG_COLOR_LIGHT_GREY);
-                    whiteTile = false;
-                } else {
-                    printOut.print(SET_BG_COLOR_DARK_GREY);
-                    whiteTile = true;
-                }
+                whiteTile = tileSwitch(printOut, whiteTile);
                 drawTile(printOut, chessBoard, row, i);
                 printOut.print(RESET_TEXT_BOLD_FAINT);
             }
         } else {
             for (int i = 8; i > 0; i--) {
-                if (whiteTile) {
-                    printOut.print(SET_BG_COLOR_LIGHT_GREY);
-                    whiteTile = false;
-                } else {
-                    printOut.print(SET_BG_COLOR_DARK_GREY);
-                    whiteTile = true;
-                }
+                whiteTile = tileSwitch(printOut, whiteTile);
                 drawTile(printOut, chessBoard, row, i);
                 printOut.print(RESET_TEXT_BOLD_FAINT);
             }
         }
         drawRowNum(printOut, row);
         printOut.println();
+    }
+
+    private static boolean tileSwitch(PrintStream printOut, boolean whiteTile) {
+        if (whiteTile) {
+            printOut.print(SET_BG_COLOR_LIGHT_GREY);
+            whiteTile = false;
+        } else {
+            printOut.print(SET_BG_COLOR_DARK_GREY);
+            whiteTile = true;
+        }
+        return whiteTile;
     }
 
     private static void drawRowNum(PrintStream printOut, int row) {
@@ -120,18 +119,6 @@ public class DrawBoard {
                 printOut.print(SET_TEXT_BOLD);
             }
             switch (printArg) {
-//                case "WHITE_KING" -> printOut.print(WHITE_KING);
-//                case "WHITE_QUEEN" -> printOut.print(WHITE_QUEEN);
-//                case "WHITE_ROOK" -> printOut.print(WHITE_ROOK);
-//                case "WHITE_BISHOP" -> printOut.print(WHITE_BISHOP);
-//                case "WHITE_KNIGHT" -> printOut.print(WHITE_KNIGHT);
-//                case "WHITE_PAWN" -> printOut.print(WHITE_PAWN);
-//                case "BLACK_KING" -> printOut.print(BLACK_KING);
-//                case "BLACK_QUEEN" -> printOut.print(BLACK_QUEEN);
-//                case "BLACK_ROOK" -> printOut.print(BLACK_ROOK);
-//                case "BLACK_KNIGHT" -> printOut.print(BLACK_KNIGHT);
-//                case "BLACK_BISHOP" -> printOut.print(BLACK_BISHOP);
-//                case "BLACK_PAWN" -> printOut.print(BLACK_PAWN);
                 case "WHITE_KING" -> printOut.print(" K ");
                 case "WHITE_QUEEN" -> printOut.print(" Q ");
                 case "WHITE_ROOK" -> printOut.print(" R ");

@@ -9,13 +9,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class UI {
-    public static void UI() throws IOException {
-        Scanner scanner = new Scanner(System.in);
-        PreLogIn(scanner);
-        scanner.close();
-    }
 
-    public static void PreLogIn(Scanner scanner) throws IOException {
+    public static void preLogIn() throws IOException {
+        Scanner scanner = new Scanner(System.in);
         int selection = 0;
         while (selection != 4) {
             System.out.println("Welcome! Make a Selection");
@@ -36,16 +32,17 @@ public class UI {
                     case 1 -> {
                         AuthData user = userLogin(scanner);
                         if (user != null){
-                            PostLogIn(scanner, user);
-                        } else {
-                            System.out.println("Oops, something went wrong. Username may not exist or an" +
-                                    " error occurred. Please Try Again");
+                            postLogIn(scanner, user);
+                        }
+                        else {
+                            System.out.print("Oops, something went wrong. Username/password may not exist or ");
+                            System.out.println("an error occurred. Please Try Again");
                         }
                     }
                     case 2 -> {
                         AuthData user = userRegister(scanner);
                         if (user != null) {
-                            PostLogIn(scanner, user);
+                            postLogIn(scanner, user);
                         } else {
                           System.out.println("Oops, something went wrong. Username may be taken or an " +
                                   "error occurred. Please try again");
@@ -58,9 +55,10 @@ public class UI {
                 System.out.println();
             }
         }
+        scanner.close();
     }
 
-    public static void PostLogIn(Scanner scanner, AuthData user) throws IOException {
+    public static void postLogIn(Scanner scanner, AuthData user) throws IOException {
         Collection<GameData> games = new ArrayList<>();
         int selection;
         while (true) {
@@ -152,10 +150,10 @@ public class UI {
         return games;
     }
 
-    public static void createGame(Scanner scanner, String Token) throws IOException {
+    public static void createGame(Scanner scanner, String token) throws IOException {
         System.out.print("Name of Game: ");
         String gameName = scanner.next();
-        String response = ServerFacade.createGame(Token, gameName);
+        String response = ServerFacade.createGame(token, gameName);
         if (response != null) {
             System.out.println("An error has occurred, please try again.");
         }
@@ -178,7 +176,7 @@ public class UI {
 
             GameData observeGame = gameList.get(index - 1);
 
-            DrawBoard.DrawBoard("WHITE", observeGame.game().getBoard());
+            DrawBoard.drawBoard("WHITE", observeGame.game().getBoard());
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid number.");
         }
@@ -212,7 +210,7 @@ public class UI {
                     System.out.println("An error occurred. Double check that you have chosen the right Game " +
                             "and color to play.");
                 } else {
-                    DrawBoard.DrawBoard(player, game.game().getBoard());
+                    DrawBoard.drawBoard(player, game.game().getBoard());
                 }
             } else {
                 System.out.println("Invalid input. Please enter a valid color (WHITE / BLACK).");

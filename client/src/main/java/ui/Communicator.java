@@ -8,13 +8,13 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 public class Communicator {
-    private static String ServerURL = "http://localhost:8810";
+    private static String serverURL = "http://localhost:8810";
 
     public static String post(String endpoint, String jsonInput, String token) throws IOException {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
-        URL url = new URL(ServerURL + endpoint);
+        URL url = new URL(serverURL + endpoint);
         HttpURLConnection connection  = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
@@ -52,7 +52,7 @@ public class Communicator {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
-        URL url = new URL(ServerURL + endpoint);
+        URL url = new URL(serverURL + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
@@ -77,7 +77,7 @@ public class Communicator {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
-        URL url = new URL(ServerURL + endpoint);
+        URL url = new URL(serverURL + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
@@ -98,16 +98,16 @@ public class Communicator {
         return response.toString();
     }
 
-    public static String put(String endpoint, String jsonInput, String Token) throws IOException {
+    public static String put(String endpoint, String jsonInput, String token) throws IOException {
         BufferedReader reader;
         StringBuilder response = new StringBuilder();
 
-        URL url = new URL(ServerURL + endpoint);
+        URL url = new URL(serverURL + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
         connection.setRequestMethod("PUT");
-        connection.setRequestProperty("authorization", Token);
+        connection.setRequestProperty("authorization", token);
         connection.setDoOutput(true);
 
         connection.connect();
@@ -131,7 +131,7 @@ public class Communicator {
 
     // this is to facilitate ServerFacadeTests database cleanup
     public static void testDelete(String endpoint) throws IOException {
-        URL url = new URL(ServerURL + endpoint);
+        URL url = new URL(serverURL + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setConnectTimeout(5000);
