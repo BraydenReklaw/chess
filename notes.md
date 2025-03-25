@@ -445,3 +445,19 @@ server facade would have 7 methods for the 7 functions, and client communicator 
 
 creates a file of all code activities a program engages in. Great replacement for print-debugging
 
+## SOCKETS -> Phase 6
+
+You can run multiple client mains at once to test ui messaging.
+
+Look at Socket Slides. `Spark.webSocket`. Try separate class for WebSocketHandler. Try to understand onMessage method of the handler. Make a map of socket sessions keyed to gameID. Look at the 
+server and client examples in the code. Connect, handle incoming, setup response-ability. Intelli-j will recommend using a lambda at some point - this may not work, so be mindful. 
+
+Sockets only send strings, so JSON conversions will be required.                         b1 c3
+
+WebsocketHandler in server class
+
+Resign does not leave the game. just remove make move abilities. Functions the same as checkmate. Leave Game backs a player out of a color position. After a move, notify others and prompt a redraw. 
+Consider making make-move force a board redraw for everyone.
+
+## Final Exam topic notes
+
