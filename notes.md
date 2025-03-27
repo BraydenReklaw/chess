@@ -452,12 +452,39 @@ You can run multiple client mains at once to test ui messaging.
 Look at Socket Slides. `Spark.webSocket`. Try separate class for WebSocketHandler. Try to understand onMessage method of the handler. Make a map of socket sessions keyed to gameID. Look at the 
 server and client examples in the code. Connect, handle incoming, setup response-ability. Intelli-j will recommend using a lambda at some point - this may not work, so be mindful. 
 
-Sockets only send strings, so JSON conversions will be required.                         b1 c3
+Sockets only send strings, so JSON conversions will be required.                         b1 c3 (don't forget promotion)
 
 WebsocketHandler in server class
 
 Resign does not leave the game. just remove make move abilities. Functions the same as checkmate. Leave Game backs a player out of a color position. After a move, notify others and prompt a redraw. 
 Consider making make-move force a board redraw for everyone.
 
+chess client implements servermessageobserver so the ui can access notification messages. <b>Look at websocket slides on chess server</b>
+
+consider creating a separate class for pure serialization/deserialization (Gson). This enables single responsibility, and if in the future we decided to abandon gson for a different 
+serialization library, all the relevent code is in one place and isn't scattered across the application
+
+can't make a move if in checkmate, not your turn, or opponent has left or resigned.
+
+saveSession - structure for all sessions associated with a gameID (try a map with gameID as key). All users in a specified session should recieve the same message.
+
 ## Final Exam topic notes
 
+### Security
+
+unauthorized access to data, machine, disable a system. Emphasize secure communication (HTTPS), secure password handling, secure data handling.
+
+* confidential data
+* authentication
+* data integrity - verifying data is unmodified
+* non-repudiation - verifying data authorship/origin
+
+Cryptographic hashing - one way (output can't trace back to input), deterministic (same input = same output), fixed size, psuedo-random (small change to input = radically different output). 
+SHA-2 is modern use one - yet to be cracked/broken. Never store unhashed passwords. "salts" (random strings concatonated to password before encryption) ensure that 2 passwords that hash the 
+same normally hash differently instead. Password hashing should be costly to compute relatively.
+
+Encryption/Decryption - 2-way. plaintext `"Hello, I am Baymax` to ciphertext `"sdfu$26SJK4d(23gS"`, using a key to transform one into the other. the bigger the key, the harder to crack. Symmetric Key - 
+A secret key. If you know the key, you can decrpyt. Asymmetric Key - Pyblic Key. There are 2 keys, one for encrypting, the other for decrypting. you only ever know one. 
+
+Secure Key Exchange is an important topic. SSL (the 3-way handshake). A sends B a public key. B uses it to encrypt a symmetric key, sends encrypted key to A. A decrypts with private key. B sends A 
+encrypted data to be decrypted with the decrypted symmetric key.
