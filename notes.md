@@ -488,3 +488,15 @@ A secret key. If you know the key, you can decrpyt. Asymmetric Key - Pyblic Key.
 
 Secure Key Exchange is an important topic. SSL (the 3-way handshake). A sends B a public key. B uses it to encrypt a symmetric key, sends encrypted key to A. A decrypts with private key. B sends A 
 encrypted data to be decrypted with the decrypted symmetric key.
+
+Certificates - get from an authority or self-sign a certificate. Enable 3-way handshake
+
+Digital Signatures - how does a signed document stay verified that nothing has been altered afterwards. Sign through a hash, encrypt resulting digest with private key, send to reciever. Reciever hashs data,
+decrypts the encrypted data, and if the digests match, the document is unmodified.
+
+### Concurrency
+
+multi-threaded programing. sequential is process only. threads allow concerency, multiple cores allow parallelizations and then both. Threads can create huge bugs (synchronization errors). Threadpools. 
+Java has a thread class and an executor class that runs a threadpool. Runnable (no return needed) vs Callable (need something returned). Race conditions must be considered (a new class of bug). Consider the 
+purpose of semaphores. `public synchronized`. this won't work on an instance where multiple instances are being created, as the issue is still multiple instances accessing the same resource
+
