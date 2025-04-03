@@ -1,7 +1,10 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import dataaccess.GameSQLDAO;
 import dataaccess.GameSession;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -15,11 +18,12 @@ import java.util.Map;
 @WebSocket
 public class SocketHandler {
 
-    private static Map<Integer, GameSession> gameSessions = new HashMap<>();
-    private static Gson gson = new Gson();
+    private Map<Integer, GameSession> gameSessions = new HashMap<>();
+    private Gson gson = new Gson();
+    private GameSQLDAO gameDataAccess = new GameSQLDAO();
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException {
+    public void onMessage(Session session, String message) throws IOException, DataAccessException {
         UserGameCommand command = gson.fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case CONNECT -> handleConnect(session, command);
@@ -29,19 +33,35 @@ public class SocketHandler {
         }
     }
 
-    private void handleConnect(Session session, UserGameCommand command) throws IOException {
+    private void handleConnect(Session session, UserGameCommand command) throws IOException, DataAccessException {
         GameSession gameSession = gameSessions.computeIfAbsent(command.getGameID(), k -> new GameSession());
         gameSession.addClient(session, command.getAuthToken());
-        sendLoadGame(session);
-        sendNotification(gameSession, command.getAuthToken() + " connected to game");
+        GameData game = gameDataAccess.getGame(command.getGameID());
+        if (game == null) {
+            sendError(session, "Game not found for gameID: " + command.getGameID());
+            return;
+        }
+        sendLoadGame(session, game);
+        sendNotificationOthers(gameSession, session, command.getAuthToken() + " connected to game");
     }
 
-    private void sendLoadGame(Session session) throws IOException {
+    private void sendLoadGame(Session session, GameData game) throws IOException {
         ServerMessage loadGameMessage =  new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        loadGameMessage.setGame(game);
         session.getRemote().sendString(gson.toJson(loadGameMessage));
     }
 
-    private void sendNotification(GameSession gameSession, String message) throws IOException {
+    private void sendNotificationOthers(GameSession gameSession, Session root, String message) throws IOException {
+        ServerMessage notificationMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        notificationMessage.setMessage(message);
+        for (Session clientSession : gameSession.getClients()) {
+            if (!clientSession.equals(root)) {
+                clientSession.getRemote().sendString(gson.toJson(notificationMessage));
+            }
+        }
+    }
+
+    private void sendNotificationAll(GameSession gameSession, String message) throws IOException {
         ServerMessage notificationMessage =  new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
         notificationMessage.setMessage(message);
         for (Session clientSession : gameSession.getClients()) {
