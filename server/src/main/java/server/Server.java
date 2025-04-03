@@ -38,6 +38,8 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+        Spark.webSocket("/ws", SocketHandler.class);
+
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", (request, response) -> userHandler.register(request, response));
         Spark.delete("/db", (request, response) -> clearHandler.clear(request, response));
@@ -46,6 +48,7 @@ public class Server {
         Spark.get("/game", (request, response) -> gameHandler.list(request, response));
         Spark.post("/game", (request, response) -> gameHandler.create(request, response));
         Spark.put("/game", (request, response) -> gameHandler.join(request, response));
+
 
         //This line initializes the server and can be removed once you have a functioning endpoint
         // Spark.init();
