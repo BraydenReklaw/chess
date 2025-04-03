@@ -1,6 +1,7 @@
 package dataaccess;
 
-import javax.websocket.Session;
+import org.eclipse.jetty.websocket.api.Session;
+
 import java.util.HashSet;
 import java.util.Set;
 

@@ -2,17 +2,17 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.GameSession;
+import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@ServerEndpoint("/ws")
+@WebSocket
 public class SocketHandler {
 
     private static Map<Integer, GameSession> gameSessions = new HashMap<>();
@@ -38,14 +38,14 @@ public class SocketHandler {
 
     private void sendLoadGame(Session session) throws IOException {
         ServerMessage loadGameMessage =  new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-        session.getBasicRemote().sendText(gson.toJson(loadGameMessage));
+        session.getRemote().sendString(gson.toJson(loadGameMessage));
     }
 
     private void sendNotification(GameSession gameSession, String message) throws IOException {
         ServerMessage notificationMessage =  new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
         notificationMessage.setMessage(message);
         for (Session clientSession : gameSession.getClients()) {
-            clientSession.getBasicRemote().sendText(gson.toJson(notificationMessage));
+            clientSession.getRemote().sendString(gson.toJson(notificationMessage));
         }
     }
 
