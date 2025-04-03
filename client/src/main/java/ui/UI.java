@@ -195,7 +195,7 @@ public class UI {
         String selection = scanner.next();
         try{
             int index = Integer.parseInt(selection);
-            if (index > games.size()) {
+            if (index > games.size() || index < 1) {
                 System.out.println("This is not a valid game. Select another");
                 return;
             }
