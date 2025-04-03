@@ -180,6 +180,8 @@ public class UI {
 
             GameData observeGame = gameList.get(index - 1);
 
+            GameUI.gameplay(scanner, observeGame, "WHITE", true);
+
             DrawBoard.drawBoard("WHITE", observeGame.game().getBoard());
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid number.");
@@ -214,6 +216,7 @@ public class UI {
                     System.out.println("An error occurred. Double check that you have chosen the right Game " +
                             "and color to play.");
                 } else {
+                    GameUI.gameplay(scanner, game, player, false);
                     DrawBoard.drawBoard(player, game.game().getBoard());
                 }
             } else {
