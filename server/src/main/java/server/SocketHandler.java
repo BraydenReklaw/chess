@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @WebSocket
 public class SocketHandler {
@@ -70,15 +71,28 @@ public class SocketHandler {
             sendError(session, "Unauthorized");
             return;
         }
-        ChessGame game = gameData.game();
-        ChessMove move = command.getMove();
-        ChessPosition start = move.getStartPosition();
-        Collection<ChessMove> moves = game.validMoves(start);
-        if (!moves.contains(move)) {
-            sendError(session, "Unable to make move");
+        ChessGame.TeamColor playerColor = null;
+        if (Objects.equals(user.username(), gameData.whiteUsername())) {
+            playerColor = ChessGame.TeamColor.WHITE;
+        } else if (Objects.equals(user.username(), gameData.blackUsername())) {
+            playerColor = ChessGame.TeamColor.BLACK;
+        } else {
+            sendError(session, "You are observing, you cannot make moves");
             return;
         }
-        game.makeMove(move);
+        ChessGame game = gameData.game();
+        ChessMove move = command.getMove();
+        ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
+        if (playerColor != null && game.getTeamTurn() != playerColor) {
+            sendError(session, "Invalid Move, not your piece");
+            return;
+        }
+        try {
+            game.makeMove(move);
+        } catch (InvalidMoveException e) {
+            sendError(session, e.getMessage());
+            return;
+        }
         GameData updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
                 gameData.gameName(), game);
         gameDataAccess.updateGame(updatedGame);
