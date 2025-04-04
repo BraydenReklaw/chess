@@ -1,9 +1,11 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.AuthSQLDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameSQLDAO;
 import dataaccess.GameSession;
+import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -21,6 +23,7 @@ public class SocketHandler {
     private Map<Integer, GameSession> gameSessions = new HashMap<>();
     private Gson gson = new Gson();
     private GameSQLDAO gameDataAccess = new GameSQLDAO();
+    private AuthSQLDAO authAccess = new AuthSQLDAO();
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
@@ -41,8 +44,13 @@ public class SocketHandler {
             sendError(session, "Game not found for gameID: " + command.getGameID());
             return;
         }
+        AuthData user = authAccess.getAuth(command.getAuthToken());
+        if (user == null) {
+            sendError(session, "Unauthorized");
+            return;
+        }
         sendLoadGame(session, game);
-        sendNotificationOthers(gameSession, session, command.getAuthToken() + " connected to game");
+        sendNotificationOthers(gameSession, session,  user.username() + " connected to game");
     }
 
     private void sendLoadGame(Session session, GameData game) throws IOException {
@@ -71,6 +79,7 @@ public class SocketHandler {
 
     private void sendError(Session session, String errorMessage) throws IOException {
         ServerMessage error = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-        error.setMessage(errorMessage);
+        error.setError(errorMessage);
+        session.getRemote().sendString(gson.toJson(error));
     }
 }
