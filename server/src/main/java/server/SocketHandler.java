@@ -15,7 +15,6 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +34,7 @@ public class SocketHandler {
         switch (command.getCommandType()) {
             case CONNECT -> handleConnect(session, command);
             case MAKE_MOVE -> handleMove(session, command);
+            case RESIGN -> handleResign(session, command);
 
 //            default:
 //                sendError(session, "Invalid command type");
@@ -81,9 +81,12 @@ public class SocketHandler {
             return;
         }
         ChessGame game = gameData.game();
+        if (game.getGameOver()) {
+            sendError(session, "This game has finished");
+            return;
+        }
         ChessMove move = command.getMove();
-        ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
-        if (playerColor != null && game.getTeamTurn() != playerColor) {
+        if (game.getTeamTurn() != playerColor) {
             sendError(session, "Invalid Move, not your piece");
             return;
         }
@@ -114,6 +117,26 @@ public class SocketHandler {
         } else if (game.isInStalemate(game.getTeamTurn())) {
             sendNotificationAll(gameSession, player + " is in Stalemate");
         }
+    }
+
+    private void handleResign(Session session, UserGameCommand command) throws DataAccessException, IOException {
+        GameSession gameSession = gameSessions.get(command.getGameID());
+        GameData gameData = gameDataAccess.getGame(command.getGameID());
+        if (gameData == null) {
+            sendError(session, "Game not found");
+            return;
+        }
+        AuthData user = authAccess.getAuth(command.getAuthToken());
+        if (user == null) {
+            sendError(session, "Unauthorized");
+            return;
+        }
+        sendNotificationAll(gameSession, user.username() + " has resigned");
+        gameData.game().setGameOver(true);
+        GameData resignedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
+                gameData.gameName(), gameData.game());
+        gameDataAccess.updateGame(resignedGame);
+        gameSession.removeClient(session, command.getAuthToken());
     }
 
     private void sendLoadGame(Session session, GameData game) throws IOException {

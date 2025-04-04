@@ -15,4 +15,8 @@ public class GameSession {
     public Set<Session> getClients() {
         return clients;
     }
+
+    public void removeClient(Session session, String authToken) {
+        clients.remove(session);
+    }
 }
