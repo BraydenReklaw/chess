@@ -175,6 +175,7 @@ public class SocketHandler {
             }
             gameDataAccess.updateGame(updatedGame);
         }
+        gameSession.removeClient(session, command.getAuthToken());
         sendNotificationOthers(gameSession, session, user.username() + " has left the game");
     }
 
