@@ -1,5 +1,6 @@
 package server;
 
+import chess.*;
 import com.google.gson.Gson;
 import dataaccess.AuthSQLDAO;
 import dataaccess.DataAccessException;
@@ -14,6 +15,7 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,10 +28,12 @@ public class SocketHandler {
     private AuthSQLDAO authAccess = new AuthSQLDAO();
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException, DataAccessException {
+    public void onMessage(Session session, String message) throws IOException, DataAccessException,
+            InvalidMoveException {
         UserGameCommand command = gson.fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case CONNECT -> handleConnect(session, command);
+            case MAKE_MOVE -> handleMove(session, command);
 
 //            default:
 //                sendError(session, "Invalid command type");
@@ -51,6 +55,51 @@ public class SocketHandler {
         }
         sendLoadGame(session, game);
         sendNotificationOthers(gameSession, session,  user.username() + " connected to game");
+    }
+
+    private void handleMove(Session session, UserGameCommand command) throws
+            DataAccessException, IOException, InvalidMoveException {
+        GameSession gameSession = gameSessions.get(command.getGameID());
+        GameData gameData = gameDataAccess.getGame(command.getGameID());
+        if (gameData == null) {
+            sendError(session, "Game not found");
+            return;
+        }
+        AuthData user = authAccess.getAuth(command.getAuthToken());
+        if (user == null) {
+            sendError(session, "Unauthorized");
+            return;
+        }
+        ChessGame game = gameData.game();
+        ChessMove move = command.getMove();
+        ChessPosition start = move.getStartPosition();
+        Collection<ChessMove> moves = game.validMoves(start);
+        if (!moves.contains(move)) {
+            sendError(session, "Unable to make move");
+            return;
+        }
+        game.makeMove(move);
+        GameData updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
+                gameData.gameName(), game);
+        gameDataAccess.updateGame(updatedGame);
+        for (Session clientSession : gameSession.getClients()) {
+            sendLoadGame(clientSession, updatedGame);
+        }
+        sendNotificationOthers(gameSession, session, user.username() + " has made the move " +
+                move.getStartPosition() + move.getEndPosition());
+        String player;
+        if (game.getTeamTurn() == ChessGame.TeamColor.WHITE) {
+            player = gameData.whiteUsername();
+        } else {
+            player = gameData.blackUsername();
+        }
+        if (game.isInCheck(game.getTeamTurn())) {
+            sendNotificationAll(gameSession, player + " is in Check");
+        } else if (game.isInCheckmate(game.getTeamTurn())) {
+            sendNotificationAll(gameSession, player + " is in Checkmate");
+        } else if (game.isInStalemate(game.getTeamTurn())) {
+            sendNotificationAll(gameSession, player + " is in Stalemate");
+        }
     }
 
     private void sendLoadGame(Session session, GameData game) throws IOException {
