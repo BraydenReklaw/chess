@@ -35,9 +35,7 @@ public class SocketHandler {
             case CONNECT -> handleConnect(session, command);
             case MAKE_MOVE -> handleMove(session, command);
             case RESIGN -> handleResign(session, command);
-
-//            default:
-//                sendError(session, "Invalid command type");
+            case LEAVE -> handleLeave(session, command);
         }
     }
 
@@ -71,7 +69,7 @@ public class SocketHandler {
             sendError(session, "Unauthorized");
             return;
         }
-        ChessGame.TeamColor playerColor = null;
+        ChessGame.TeamColor playerColor;
         if (Objects.equals(user.username(), gameData.whiteUsername())) {
             playerColor = ChessGame.TeamColor.WHITE;
         } else if (Objects.equals(user.username(), gameData.blackUsername())) {
@@ -131,12 +129,53 @@ public class SocketHandler {
             sendError(session, "Unauthorized");
             return;
         }
-        sendNotificationAll(gameSession, user.username() + " has resigned");
+        if (!user.username().equals(gameData.whiteUsername()) && ! user.username().equals(gameData.blackUsername())) {
+            sendError(session, "Observers can't resign");
+            return;
+        }
+        if (gameData.game().getGameOver()) {
+           sendError(session, "This game is already over");
+           return;
+        }
         gameData.game().setGameOver(true);
         GameData resignedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
                 gameData.gameName(), gameData.game());
         gameDataAccess.updateGame(resignedGame);
-        gameSession.removeClient(session, command.getAuthToken());
+        sendNotificationAll(gameSession, user.username() + " has resigned");
+    }
+
+    private void handleLeave(Session session, UserGameCommand command) throws DataAccessException, IOException {
+        GameSession gameSession = gameSessions.get(command.getGameID());
+        GameData gameData = gameDataAccess.getGame(command.getGameID());
+        if (gameData == null) {
+            sendError(session, "Game not found");
+            return;
+        }
+        AuthData user = authAccess.getAuth(command.getAuthToken());
+        if (user == null) {
+            sendError(session, "Unauthorized");
+            return;
+        }
+        ChessGame.TeamColor playerColor;
+        if (Objects.equals(user.username(), gameData.whiteUsername())) {
+            playerColor = ChessGame.TeamColor.WHITE;
+        } else if (Objects.equals(user.username(), gameData.blackUsername())) {
+            playerColor = ChessGame.TeamColor.BLACK;
+        } else {
+            playerColor = null;
+        }
+        GameData updatedGame;
+        if (playerColor != null) {
+            if (playerColor.equals(ChessGame.TeamColor.WHITE)) {
+                updatedGame = new GameData(gameData.gameID(), null, gameData.blackUsername(),
+                        gameData.gameName(), gameData.game());
+            } else {
+                updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), null,
+                        gameData.gameName(), gameData.game());
+            }
+            gameDataAccess.updateGame(updatedGame);
+        }
+        sendNotificationOthers(gameSession, session, user.username() + " has left the game");
     }
 
     private void sendLoadGame(Session session, GameData game) throws IOException {
