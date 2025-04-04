@@ -498,5 +498,13 @@ decrypts the encrypted data, and if the digests match, the document is unmodifie
 
 multi-threaded programing. sequential is process only. threads allow concerency, multiple cores allow parallelizations and then both. Threads can create huge bugs (synchronization errors). Threadpools. 
 Java has a thread class and an executor class that runs a threadpool. Runnable (no return needed) vs Callable (need something returned). Race conditions must be considered (a new class of bug). Consider the 
-purpose of semaphores. `public synchronized`. this won't work on an instance where multiple instances are being created, as the issue is still multiple instances accessing the same resource
+purpose of semaphores. `public synchronized`. this won't work on an instance where multiple instances are being created, as the issue is still multiple instances accessing the same resource. 
+Atomic Variables - handle the issues created by critical code sections (race conditions). AtomicInteger class shuts down critical code interuption. AtomicReference. AtomicBoolean. 
+
+Race Conditions in chess:
+
+### Comand-line Builds
+
+command line builders and compilers ensure indentical code starts for every run. Maven requires a specific project structure. There is a command demo that can generate a directory structure automatically 
+to Maven's specifications. Multi-module Projects (chess is one, with server, client, shared).
 
