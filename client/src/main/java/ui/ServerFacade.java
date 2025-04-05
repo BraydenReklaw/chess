@@ -101,6 +101,10 @@ public class ServerFacade {
         return null;
     }
 
+    public void setObserver(ServerMessageObserver observer) {
+        socket.setObserver(observer);
+    }
+
     public void socketConnect() {
         try {
             socket = new SocketCommunicator(port);

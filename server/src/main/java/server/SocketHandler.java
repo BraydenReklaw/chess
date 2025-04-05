@@ -52,7 +52,7 @@ public class SocketHandler {
             sendError(session, "Unauthorized");
             return;
         }
-        sendLoadGame(session, game);
+        sendLoadGame(gameSession, game);
         sendNotificationOthers(gameSession, session,  user.username() + " connected to game");
     }
 
@@ -113,9 +113,7 @@ public class SocketHandler {
         GameData updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
                 gameData.gameName(), game);
         gameDataAccess.updateGame(updatedGame);
-        for (Session clientSession : gameSession.getClients()) {
-            sendLoadGame(clientSession, updatedGame);
-        }
+        sendLoadGame(gameSession, gameData);
 
         int startRow = move.getStartPosition().getRow();
         int startCol = move.getStartPosition().getColumn();
@@ -192,10 +190,11 @@ public class SocketHandler {
         sendNotificationOthers(gameSession, session, user.username() + " has left the game");
     }
 
-    private void sendLoadGame(Session session, GameData game) throws IOException {
+    private void sendLoadGame(GameSession gameSession, GameData game) throws IOException {
         ServerMessage loadGameMessage =  new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         loadGameMessage.setGame(game);
-        session.getRemote().sendString(gson.toJson(loadGameMessage));
+        for (Session clientSession : gameSession.getClients())
+            clientSession.getRemote().sendString(gson.toJson(loadGameMessage));
     }
 
     private void sendNotificationOthers(GameSession gameSession, Session root, String message) throws IOException {
