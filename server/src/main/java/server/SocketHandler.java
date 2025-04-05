@@ -85,7 +85,7 @@ public class SocketHandler {
         }
         ChessMove move = command.getMove();
         if (game.getTeamTurn() != playerColor) {
-            sendError(session, "Invalid Move, not your piece");
+            sendError(session, "Invalid Move, not your turn");
             return;
         }
         try {

@@ -9,8 +9,8 @@ public class Main {
         System.out.println("♕ 240 Chess Client: " + piece);
         var gameUI = new GameUI();
         var facade = new ServerFacade(8810);
-        facade.setObserver(gameUI);
         facade.socketConnect();
+        facade.setObserver(gameUI);
         UI.preLogIn();
     }
 }

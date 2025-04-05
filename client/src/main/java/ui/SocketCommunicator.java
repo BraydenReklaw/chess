@@ -24,7 +24,7 @@ public class SocketCommunicator extends Endpoint{
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    System.out.println("Message recieved");
+//                    System.out.println("Message recieved");
                     handleMessage(message);
                 }
             });
@@ -40,7 +40,7 @@ public class SocketCommunicator extends Endpoint{
     }
 
     private void handleMessage(String message) {
-        System.out.println("Message recieved");
+//        System.out.println("Message recieved");
         ServerMessage serverMessage = gson.fromJson(message, ServerMessage.class);
         if (observer != null) {
             observer.notify(serverMessage);
