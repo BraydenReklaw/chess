@@ -1,34 +1,41 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static ui.EscapeSequences.*;
 
 public class DrawBoard {
 
-    public static void drawBoard(String playerColor, ChessBoard defaultBoard) {
+    public static void drawBoard(String playerColor, ChessGame game, ChessPosition position) {
         var printOut = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        drawChessboard(printOut, playerColor, defaultBoard);
+        Collection<ChessPosition> highlights = new ArrayList<>();
+        if (position != null) {
+            Collection<ChessMove> moves = game.validMoves(position);
+            for (ChessMove validMove : moves) {
+                highlights.add(validMove.getEndPosition());
+            }
+        }
+        drawChessboard(printOut, playerColor, game.getBoard(), highlights);
 
         printOut.print(RESET_BG_COLOR);
         printOut.print(RESET_TEXT_COLOR);
     }
 
-    private static void drawChessboard(PrintStream printOut, String playerColor, ChessBoard chessBoard) {
+    private static void drawChessboard(PrintStream printOut, String playerColor,
+                                       ChessBoard chessBoard, Collection<ChessPosition> highlights) {
         drawHeader(printOut, playerColor);
         if (playerColor.equals("WHITE")) {
             for (int i = 8; i > 0; i--) {
-                drawRow(printOut, playerColor, chessBoard, i);
+                drawRow(printOut, playerColor, chessBoard, i, highlights);
             }
         } else {
             for (int i = 1; i < 9; i++) {
-                drawRow(printOut, playerColor, chessBoard, i);
+                drawRow(printOut, playerColor, chessBoard, i, highlights);
             }
         }
         drawHeader(printOut, playerColor);
@@ -61,7 +68,8 @@ public class DrawBoard {
         }
     }
 
-    private static void drawRow(PrintStream printOut, String playerColor, ChessBoard chessBoard, int row) {
+    private static void drawRow(PrintStream printOut, String playerColor, ChessBoard chessBoard,
+                                int row, Collection<ChessPosition> highlights) {
         drawRowNum(printOut, row);
         boolean whiteTile;
         if ((row % 2) == 0) {
@@ -74,13 +82,13 @@ public class DrawBoard {
             whiteTile = !whiteTile;
             for (int i = 1; i < 9; i++) {
                 whiteTile = tileSwitch(printOut, whiteTile);
-                drawTile(printOut, chessBoard, row, i);
+                drawTile(printOut, chessBoard, row, i, highlights);
                 printOut.print(RESET_TEXT_BOLD_FAINT);
             }
         } else {
             for (int i = 8; i > 0; i--) {
                 whiteTile = tileSwitch(printOut, whiteTile);
-                drawTile(printOut, chessBoard, row, i);
+                drawTile(printOut, chessBoard, row, i, highlights);
                 printOut.print(RESET_TEXT_BOLD_FAINT);
             }
         }
@@ -105,8 +113,13 @@ public class DrawBoard {
         printOut.print(" " + row + " ");
     }
 
-    private static void drawTile(PrintStream printOut, ChessBoard chessBoard, int row, int col) {
-        ChessPiece piece = chessBoard.getPiece(new ChessPosition(row, col));
+    private static void drawTile(PrintStream printOut, ChessBoard chessBoard, int row,
+                                 int col, Collection<ChessPosition> highlights) {
+        ChessPosition position = new ChessPosition(row, col);
+        if (highlights.contains(position)) {
+            printOut.print(SET_BG_COLOR_GREEN);
+        }
+        ChessPiece piece = chessBoard.getPiece(position);
         if (piece == null) {
 //            printOut.print(EMPTY);
             printOut.print("   ");

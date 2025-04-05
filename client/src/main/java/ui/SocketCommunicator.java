@@ -13,6 +13,7 @@ public class SocketCommunicator extends Endpoint{
 
     public Session session;
     private Gson gson = new Gson();
+    private ServerMessageObserver observer;
 
     public SocketCommunicator(int port) {
         try {
@@ -35,7 +36,8 @@ public class SocketCommunicator extends Endpoint{
 
     private void handleMessage(String message) {
         ServerMessage serverMessage = gson.fromJson(message, ServerMessage.class);
-        System.out.println(serverMessage.getMessage());
+//        System.out.println(serverMessage.getMessage());
+        observer.notify(serverMessage);
     }
 
     @Override
