@@ -89,10 +89,10 @@ public class UI {
                                 "Game to join or watch that game. Select 6 to Logout.");
                     }
                     case 4 -> {
-                        observeGame(scanner, games);
+                        observeGame(scanner, games, user);
                     }
                     case 3 -> {
-                        playGame(scanner, user.authToken(), games);
+                        playGame(scanner, user.authToken(), games, user);
                     }
                     case 2 -> {
                         games = listGames(user.authToken());
@@ -163,7 +163,8 @@ public class UI {
         }
     }
 
-    public static void observeGame(Scanner scanner, Collection<GameData> games) {
+    public static void observeGame(Scanner scanner, Collection<GameData> games, AuthData user) {
+        String token = user.authToken();
         if (games.isEmpty() || games == null) {
             System.out.println("There are no games to Observe right now. Try List Games again.");
             return;
@@ -180,7 +181,7 @@ public class UI {
 
             GameData observeGame = gameList.get(index - 1);
 
-            GameUI.gameplay(scanner, observeGame, "WHITE", true);
+            GameUI.gameplay(scanner, observeGame, "WHITE", user);
 
             DrawBoard.drawBoard("WHITE", observeGame.game().getBoard());
         } catch (NumberFormatException e) {
@@ -188,7 +189,7 @@ public class UI {
         }
     }
 
-    public static void playGame(Scanner scanner, String token, Collection<GameData> games) {
+    public static void playGame(Scanner scanner, String token, Collection<GameData> games, AuthData user) {
         if (games.isEmpty() || games == null) {
             System.out.println("There are no games to Play right now. Try List Games again.");
             return;
@@ -208,6 +209,7 @@ public class UI {
             System.out.printf("Current Players: White: %s, Black %s",
                     game.whiteUsername() != null ? game.whiteUsername() : "OPEN",
                     game.blackUsername() != null ? game.blackUsername() : "OPEN");
+            System.out.println();
             System.out.print("Select a Color to play as (WHITE or BLACK): ");
             String player = scanner.next();
             if (player.equals("WHITE") || player.equals("BLACK")) {
@@ -216,7 +218,7 @@ public class UI {
                     System.out.println("An error occurred. Double check that you have chosen the right Game " +
                             "and color to play.");
                 } else {
-                    GameUI.gameplay(scanner, game, player, false);
+                    GameUI.gameplay(scanner, game, player, user);
                     DrawBoard.drawBoard(player, game.game().getBoard());
                 }
             } else {
