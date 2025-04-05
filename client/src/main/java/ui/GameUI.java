@@ -1,5 +1,7 @@
 package ui;
 
+import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import model.AuthData;
 import model.GameData;
@@ -7,6 +9,7 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class GameUI implements ServerMessageObserver {
@@ -101,6 +104,70 @@ public class GameUI implements ServerMessageObserver {
                                 DrawBoard.drawBoard(playerType, activeGame.game(), position);
                             } else {
                                 System.out.println("Invalid selection, please try again.");
+                            }
+                        }
+                    }
+                    case 3 -> {
+                        System.out.println("Please input starting coordinate (ex:a2): ");
+                        String coordinate = scanner.next();
+                        if (coordinate.length() != 2) {
+                            System.out.println("Invalid Selection, please try again.");
+                            continue;
+                        } else {
+                            if (!coordinate.matches("^[a-h][1-8]$")) {
+                                System.out.println("Invalid selection, please try again.");
+                            } else {
+                                System.out.println("Please input starting coordinate (ex:a3): ");
+                                String endCoordinate = scanner.next();
+                                if (endCoordinate.length() != 2) {
+                                    System.out.println("Invalid Selection, please try again.");
+                                    continue;
+                                } else {
+                                    if (!coordinate.matches("^[a-h][1-8]$")) {
+                                        System.out.println("Invalid selection, please try again.");
+                                    } else {
+                                        char colChar = coordinate.charAt(0);
+                                        int col = colChar - 'a' + 1;
+                                        int row = Character.getNumericValue(coordinate.charAt(1));
+                                        ChessPosition startPosition = new ChessPosition(row, col);
+                                        colChar = endCoordinate.charAt(0);
+                                        col = colChar - 'a' + 1;
+                                        row = Character.getNumericValue(endCoordinate.charAt(1));
+                                        ChessPosition endPosition = new ChessPosition(row, col);
+                                        ChessMove userMove = null;
+                                        boolean promote = false;
+                                        Collection<ChessMove> moves = activeGame.game().validMoves(startPosition);
+                                        for (ChessMove move: moves) {
+                                            if (move.getPromotionPiece() != null) {
+                                                promote = true;
+                                                break;
+                                            }
+                                        }
+                                        if (promote) {
+
+                                            System.out.println("Please select a promotion piece ((r)ook, (b)ishop, (k)night, (q)ueen): ");
+                                            String promotion = scanner.next();
+                                            if (promotion.equals("r") || promotion.equals("b") || promotion.equals("k") || promotion.equals("q")) {
+                                                switch(promotion) {
+                                                    case "r" -> userMove = new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK);
+                                                    case "b" -> userMove = new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP);
+                                                    case "k" -> userMove = new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT);
+                                                    case "q" -> userMove = new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN);
+                                                }
+                                            } else {
+                                                System.out.println("Invalid Selection, please try again");
+                                            }
+                                        } else {
+                                            userMove = new ChessMove(startPosition, endPosition, null);
+                                        }
+                                        UserGameCommand makeMove = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, user.authToken(), game.gameID(), userMove);
+                                        try {
+                                            ServerFacade.sendCommand(makeMove);
+                                        } catch (IOException e) {
+                                            System.out.println("An error occurred while making a move");
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
