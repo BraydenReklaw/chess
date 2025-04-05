@@ -57,7 +57,7 @@ public class SocketHandler {
     }
 
     private void handleMove(Session session, UserGameCommand command) throws
-            DataAccessException, IOException, InvalidMoveException {
+            DataAccessException, IOException {
         GameSession gameSession = gameSessions.get(command.getGameID());
         GameData gameData = gameDataAccess.getGame(command.getGameID());
         if (gameData == null) {
@@ -94,26 +94,39 @@ public class SocketHandler {
             sendError(session, e.getMessage());
             return;
         }
-        GameData updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
-                gameData.gameName(), game);
-        gameDataAccess.updateGame(updatedGame);
-        for (Session clientSession : gameSession.getClients()) {
-            sendLoadGame(clientSession, updatedGame);
-        }
-        sendNotificationOthers(gameSession, session, user.username() + " has made the move " +
-                move.getStartPosition() + move.getEndPosition());
         String player;
+        String message = null;
         if (game.getTeamTurn() == ChessGame.TeamColor.WHITE) {
             player = gameData.whiteUsername();
         } else {
             player = gameData.blackUsername();
         }
         if (game.isInCheck(game.getTeamTurn())) {
-            sendNotificationAll(gameSession, player + " is in Check");
+            message = (player + " is in Check");
         } else if (game.isInCheckmate(game.getTeamTurn())) {
-            sendNotificationAll(gameSession, player + " is in Checkmate");
+            message = (player + " is in Checkmate");
+            game.setGameOver(true);
         } else if (game.isInStalemate(game.getTeamTurn())) {
-            sendNotificationAll(gameSession, player + " is in Stalemate");
+            message = (player + " is in Stalemate");
+            game.setGameOver(true);
+        }
+        GameData updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
+                gameData.gameName(), game);
+        gameDataAccess.updateGame(updatedGame);
+        for (Session clientSession : gameSession.getClients()) {
+            sendLoadGame(clientSession, updatedGame);
+        }
+
+        int startRow = move.getStartPosition().getRow();
+        int startCol = move.getStartPosition().getColumn();
+        int endRow = move.getEndPosition().getRow();
+        int endCol = move.getEndPosition().getColumn();
+        char startColLetter = (char) ('a' + startCol - 1);
+        char endColLetter = (char) ('a' + endCol - 1);
+        sendNotificationOthers(gameSession, session, user.username() + " has made the move " +
+                startColLetter + startRow +" to " + endColLetter + endRow);
+        if (message != null) {
+            sendNotificationAll(gameSession, message);
         }
     }
 
