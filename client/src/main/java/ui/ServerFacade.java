@@ -7,10 +7,13 @@ import java.util.Collection;
 import com.google.gson.*;
 import model.AuthData;
 import model.GameData;
+import websocket.commands.UserGameCommand;
+
 
 public class ServerFacade {
 
     public static int port;
+    private static SocketCommunicator socket;
 
     public ServerFacade(int port) {
         ServerFacade.port = port;
@@ -96,6 +99,19 @@ public class ServerFacade {
             return "Error";
         }
         return null;
+    }
+
+    public void socketConnect() {
+        try {
+            socket = new SocketCommunicator(port);
+        }
+        catch (Exception e) {
+            System.out.println("Failed to make connection with server");
+        }
+    }
+
+    public static void sendCommand(UserGameCommand command) throws IOException {
+        socket.sendMessage(command);
     }
 
     // This is purely for database clearing

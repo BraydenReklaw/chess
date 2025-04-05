@@ -181,6 +181,7 @@ public class SocketHandler {
 
     private void sendLoadGame(Session session, GameData game) throws IOException {
         ServerMessage loadGameMessage =  new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        loadGameMessage.setMessage("Game loaded");
         loadGameMessage.setGame(game);
         session.getRemote().sendString(gson.toJson(loadGameMessage));
     }
