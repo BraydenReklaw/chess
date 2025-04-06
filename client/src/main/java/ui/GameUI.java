@@ -8,7 +8,6 @@ import model.AuthData;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Scanner;
@@ -38,6 +37,7 @@ public class GameUI implements ServerMessageObserver {
     }
 
     public void ui(Scanner scanner, int gameID, String playerColor, AuthData user) {
+        drawer.drawBoard(playerColor, null);
         int selection = 0;
         while (selection != 5) {
             System.out.println("Please make a selection:");
