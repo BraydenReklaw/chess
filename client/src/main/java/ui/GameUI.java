@@ -119,6 +119,7 @@ public class GameUI implements ServerMessageObserver {
     public void handleMakeMove(Scanner scanner, int gameID, AuthData user) {
         String coordinate;
         String endCoordinate;
+        System.out.println("Please input starting coordinate (ex:a2): ");
         while (true) {
             coordinate = scanner.next();
             if (coordinate.length() != 2) {

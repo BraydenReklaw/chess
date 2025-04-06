@@ -13,6 +13,7 @@ public class UI {
     public static GameUI gameUI;
 
     public static void preLogIn(GameUI gameUI) throws IOException {
+        UI.gameUI = gameUI;
         Scanner scanner = new Scanner(System.in);
         int selection = 0;
         while (selection != 4) {
@@ -166,7 +167,6 @@ public class UI {
     }
 
     public static void observeGame(Scanner scanner, Collection<GameData> games, AuthData user) {
-        String token = user.authToken();
         if (games.isEmpty() || games == null) {
             System.out.println("There are no games to Observe right now. Try List Games again.");
             return;
