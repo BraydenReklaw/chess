@@ -10,9 +10,9 @@ import java.util.Scanner;
 
 public class UI {
 
-    public static GameUI gameUI = new GameUI();
+    public static GameUI gameUI;
 
-    public static void preLogIn() throws IOException {
+    public static void preLogIn(GameUI gameUI) throws IOException {
         Scanner scanner = new Scanner(System.in);
         int selection = 0;
         while (selection != 4) {
@@ -183,7 +183,7 @@ public class UI {
 
             GameData observeGame = gameList.get(index - 1);
 
-            gameUI.gameplay(scanner, observeGame, "WHITE", user);
+            gameUI.gameplay(scanner, observeGame.gameID(), "WHITE", user);
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid number.");
@@ -219,14 +219,7 @@ public class UI {
                     System.out.println("An error occurred. Double check that you have chosen the right Game " +
                             "and color to play.");
                 } else {
-                    if (player.equals("WHITE")) {
-                        game = new GameData(game.gameID(), user.username(), game.blackUsername(),
-                                game.gameName(), game.game());
-                    } else {
-                        game = new GameData(game.gameID(), game.whiteUsername(), user.username(),
-                                game.gameName(), game.game());
-                    }
-                    gameUI.gameplay(scanner, game, player, user);
+                    gameUI.gameplay(scanner, game.gameID(), player, user);
                 }
             } else {
                 System.out.println("Invalid input. Please enter a valid color (WHITE / BLACK).");

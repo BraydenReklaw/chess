@@ -11,7 +11,21 @@ import static ui.EscapeSequences.*;
 
 public class DrawBoard {
 
-    public static void drawBoard(String playerColor, ChessGame game, ChessPosition position) {
+    ChessGame game;
+
+    public DrawBoard(ChessGame game) {
+        this.game = game;
+    }
+
+    public ChessGame getGame() {
+        return game;
+    }
+
+    public void updateGame(ChessGame game) {
+        this.game = game;
+    }
+
+    public void drawBoard(String playerColor, ChessPosition position) {
         var printOut = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         Collection<ChessPosition> highlights = new ArrayList<>();
         if (position != null) {
