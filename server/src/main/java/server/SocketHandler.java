@@ -85,6 +85,11 @@ public class SocketHandler {
             sendError(session, "Unauthorized");
             return;
         }
+        ChessGame game = gameData.game();
+        if (game.getGameOver()) {
+            sendError(session, "This game has finished");
+            return;
+        }
         ChessGame.TeamColor playerColor;
         if (Objects.equals(user.username(), gameData.whiteUsername())) {
             playerColor = ChessGame.TeamColor.WHITE;
@@ -92,11 +97,6 @@ public class SocketHandler {
             playerColor = ChessGame.TeamColor.BLACK;
         } else {
             sendError(session, "You are observing, you cannot make moves");
-            return;
-        }
-        ChessGame game = gameData.game();
-        if (game.getGameOver()) {
-            sendError(session, "This game has finished");
             return;
         }
         ChessMove move = command.getMove();
