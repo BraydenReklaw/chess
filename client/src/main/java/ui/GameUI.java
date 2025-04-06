@@ -8,6 +8,7 @@ import model.AuthData;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Scanner;
@@ -46,7 +47,7 @@ public class GameUI implements ServerMessageObserver {
             System.out.println("4. Resign");
             System.out.println("5. Leave");
             System.out.println("6. Help");
-            System.out.print("Make a selection (number): ");
+            System.out.println("Make a selection (number): ");
             if (scanner.hasNext()) {
                 selection = scanner.nextInt();
                 switch (selection) {
@@ -65,9 +66,12 @@ public class GameUI implements ServerMessageObserver {
     }
 
     public void loadHelp() {
-        System.out.println("To redraw the current board, select 1. To see any piece's legal moves"
-                        + " select 2. To make a move, select 3 and give the coordinates as prompted. To resign "
-                        + "the game, select 4. To Leave, select 5. Observers may not select 3 or 4.");
+        System.out.println("To redraw the current board, select 1.");
+        System.out.println("To see any piece's legal moves select 2.");
+        System.out.println("To make a move, select 3 and give the coordinates as prompted. " +
+                "(Only Available to players)");
+        System.out.println("To resign and forfeit the game, select 4. (Only available to players)");
+        System.out.println("To leave the game, select 5.");
     }
 
     public void handleLeave(int gameID, AuthData user) {
@@ -76,7 +80,7 @@ public class GameUI implements ServerMessageObserver {
                     UserGameCommand.CommandType.LEAVE, user.authToken(), gameID, null);
             ServerFacade.sendCommand(leave);
         } catch (IOException e) {
-            System.out.println("An error occurred leaving the game");
+            System.out.println("An error occurred while leaving the game");
         }
     }
 
@@ -117,14 +121,13 @@ public class GameUI implements ServerMessageObserver {
     }
 
     public void handleMakeMove(Scanner scanner, int gameID, AuthData user) {
+        System.out.println("Please input starting coordinate (ex:a2): ");
         String coordinate;
         String endCoordinate;
-        System.out.println("Please input starting coordinate (ex:a2): ");
         while (true) {
             coordinate = scanner.next();
             if (coordinate.length() != 2) {
                 System.out.println("Invalid Selection, please try again.");
-                System.out.println("Please input starting coordinate (ex:a2): ");
             } else if (!coordinate.matches("^[a-h][1-8]$")) {
                 System.out.println("Invalid selection, please try again.");
             } else {
@@ -136,7 +139,6 @@ public class GameUI implements ServerMessageObserver {
             endCoordinate = scanner.next();
             if (endCoordinate.length() != 2) {
                 System.out.println("Invalid Selection, please try again.");
-                System.out.println("Please input starting coordinate (ex:a3): ");
             } else if (!endCoordinate.matches("^[a-h][1-8]$")) {
                 System.out.println("Invalid selection, please try again.");
             } else {
@@ -162,8 +164,8 @@ public class GameUI implements ServerMessageObserver {
             }
         }
         if (promote) {
+            System.out.println("Please select a promotion piece ((r)ook, (b)ishop, (k)night, (q)ueen): ");
             while(true) {
-                System.out.println("Please select a promotion piece ((r)ook, (b)ishop, (k)night, (q)ueen): ");
                 String promotion = scanner.next();
                 if (promotion.equals("r") || promotion.equals("b") || promotion.equals("k") || promotion.equals("q")) {
                     switch(promotion) {
@@ -200,11 +202,11 @@ public class GameUI implements ServerMessageObserver {
 
     public void notification(ServerMessage serverMessage) {
         String message = serverMessage.getMessage();
-        System.out.println(message);
+        System.out.println("***** " + message + " *****");
     }
 
     public void error(ServerMessage errorMessage) {
         String error = errorMessage.getErrorMessage();
-        System.out.println("Error: " + error);
+        System.out.println("***** Error: " + error + " *****");
     }
 }
