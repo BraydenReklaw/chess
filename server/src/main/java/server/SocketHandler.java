@@ -2,6 +2,7 @@ package server;
 
 import chess.*;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dataaccess.AuthSQLDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameSQLDAO;
@@ -33,8 +34,8 @@ public class SocketHandler {
         UserGameCommand command = gson.fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case CONNECT -> handleConnect(session, command);
-            case MAKE_MOVE -> handleMove(session, command);
             case RESIGN -> handleResign(session, command);
+            case MAKE_MOVE -> handleMove(session, command);
             case LEAVE -> handleLeave(session, command);
         }
     }
@@ -52,12 +53,13 @@ public class SocketHandler {
             sendError(session, "Unauthorized");
             return;
         }
-        sendLoadGame(gameSession, game);
+        sendLoadGame(session, game);
         sendNotificationOthers(gameSession, session,  user.username() + " connected to game");
     }
 
     private void handleMove(Session session, UserGameCommand command) throws
             DataAccessException, IOException {
+
         GameSession gameSession = gameSessions.get(command.getGameID());
         GameData gameData = gameDataAccess.getGame(command.getGameID());
         if (gameData == null) {
@@ -113,7 +115,9 @@ public class SocketHandler {
         GameData updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
                 gameData.gameName(), game);
         gameDataAccess.updateGame(updatedGame);
-        sendLoadGame(gameSession, gameData);
+        for (Session clientSession : gameSession.getClients()) {
+            sendLoadGame(clientSession, gameData);
+        }
 
         int startRow = move.getStartPosition().getRow();
         int startCol = move.getStartPosition().getColumn();
@@ -190,11 +194,10 @@ public class SocketHandler {
         sendNotificationOthers(gameSession, session, user.username() + " has left the game");
     }
 
-    private void sendLoadGame(GameSession gameSession, GameData game) throws IOException {
+    private void sendLoadGame(Session session, GameData game) throws IOException {
         ServerMessage loadGameMessage =  new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         loadGameMessage.setGame(game);
-        for (Session clientSession : gameSession.getClients())
-            clientSession.getRemote().sendString(gson.toJson(loadGameMessage));
+        session.getRemote().sendString(gson.toJson(loadGameMessage));
     }
 
     private void sendNotificationOthers(GameSession gameSession, Session root, String message) throws IOException {

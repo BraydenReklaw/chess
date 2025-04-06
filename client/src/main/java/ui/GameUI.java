@@ -164,7 +164,7 @@ public class GameUI implements ServerMessageObserver {
                                         try {
                                             ServerFacade.sendCommand(makeMove);
                                         } catch (IOException e) {
-                                            System.out.println("An error occurred while making a move");
+                                            System.out.println("An Error Occurred while making a move");
                                         }
                                     }
                                 }
