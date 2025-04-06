@@ -219,6 +219,13 @@ public class UI {
                     System.out.println("An error occurred. Double check that you have chosen the right Game " +
                             "and color to play.");
                 } else {
+                    if (player.equals("WHITE")) {
+                        game = new GameData(game.gameID(), user.username(), game.blackUsername(),
+                                game.gameName(), game.game());
+                    } else {
+                        game = new GameData(game.gameID(), game.whiteUsername(), user.username(),
+                                game.gameName(), game.game());
+                    }
                     gameUI.gameplay(scanner, game, player, user);
                 }
             } else {

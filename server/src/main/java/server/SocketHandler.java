@@ -2,7 +2,6 @@ package server;
 
 import chess.*;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dataaccess.AuthSQLDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameSQLDAO;
@@ -10,6 +9,7 @@ import dataaccess.GameSession;
 import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
@@ -27,6 +27,12 @@ public class SocketHandler {
     private Gson gson = new Gson();
     private GameSQLDAO gameDataAccess = new GameSQLDAO();
     private AuthSQLDAO authAccess = new AuthSQLDAO();
+
+    @OnWebSocketError
+    public void onError(Session session, Throwable error) {
+        System.err.println("WebSocket error: " + error.getMessage());
+        error.printStackTrace();  // Optional
+    }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException,
