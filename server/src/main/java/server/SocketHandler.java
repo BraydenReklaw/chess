@@ -60,7 +60,15 @@ public class SocketHandler {
             return;
         }
         sendLoadGame(session, game);
-        sendNotificationOthers(gameSession, session,  user.username() + " connected to game");
+        String player;
+        if (user.username().equals(game.whiteUsername())) {
+            player = "the WHITE player";
+        } else if (user.username().equals(game.blackUsername())) {
+            player = "the BLACK player";
+        } else {
+            player = "an observer";
+        }
+        sendNotificationOthers(gameSession, session,  user.username() + " connected to game as " + player);
     }
 
     private void handleMove(Session session, UserGameCommand command) throws
@@ -102,20 +110,22 @@ public class SocketHandler {
             sendError(session, e.getMessage());
             return;
         }
-        String player;
+        String player, opponent;
         String message = null;
         if (game.getTeamTurn() == ChessGame.TeamColor.WHITE) {
             player = gameData.whiteUsername();
+            opponent = gameData.blackUsername();
         } else {
             player = gameData.blackUsername();
+            opponent = gameData.whiteUsername();
         }
         if (game.isInCheck(game.getTeamTurn())) {
             message = (player + " is in Check");
         } else if (game.isInCheckmate(game.getTeamTurn())) {
-            message = (player + " is in Checkmate");
+            message = (player + " is in Checkmate. The Game is over. " + opponent + " wins!");
             game.setGameOver(true);
         } else if (game.isInStalemate(game.getTeamTurn())) {
-            message = (player + " is in Stalemate");
+            message = (player + " is in Stalemate. The Game is over. " + opponent + " wins!");
             game.setGameOver(true);
         }
         GameData updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
@@ -132,7 +142,7 @@ public class SocketHandler {
         char startColLetter = (char) ('a' + startCol - 1);
         char endColLetter = (char) ('a' + endCol - 1);
         sendNotificationOthers(gameSession, session, user.username() + " has made the move " +
-                startColLetter + startRow +" to " + endColLetter + endRow);
+                startColLetter + startRow +" to " + endColLetter + endRow + ". It is now " + opponent + "'s turn.");
         if (message != null) {
             sendNotificationAll(gameSession, message);
         }

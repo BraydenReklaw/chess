@@ -47,7 +47,7 @@ public class GameUI implements ServerMessageObserver {
             System.out.println("4. Resign");
             System.out.println("5. Leave");
             System.out.println("6. Help");
-            System.out.println("Make a selection (number): ");
+            System.out.print("Make a selection (number): ");
             if (scanner.hasNext()) {
                 selection = scanner.nextInt();
                 switch (selection) {
@@ -55,12 +55,13 @@ public class GameUI implements ServerMessageObserver {
                     case 1 -> drawer.drawBoard(playerColor, null);
                     case 5 -> {
                         handleLeave(gameID, user);
-                        return;
                     }
                     case 4 -> handleResign(scanner, gameID, user);
                     case 2 -> handleHighlight(scanner, playerColor);
                     case 3 -> handleMakeMove(scanner, gameID, user);
+                    default -> System.out.println("Invalid selection, please select 1-6 only");
                 }
+                System.out.println();
             }
         }
     }
@@ -196,7 +197,10 @@ public class GameUI implements ServerMessageObserver {
         switch (message.getServerMessageType()) {
             case NOTIFICATION -> notification(message);
             case ERROR -> error(message);
-            case LOAD_GAME -> drawer.updateGame(message.getGame().game());
+            case LOAD_GAME -> {
+                drawer.updateGame(message.getGame().game());
+                System.out.println("The Chessboard has been updated. It is recommended to (re)draw the Board.");
+            }
         }
     }
 
