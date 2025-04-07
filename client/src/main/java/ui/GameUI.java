@@ -47,7 +47,7 @@ public class GameUI implements ServerMessageObserver {
             System.out.println("4. Resign");
             System.out.println("5. Leave");
             System.out.println("6. Help");
-            System.out.print("Make a selection (number): ");
+            System.out.println("Make a selection (number): ");
             if (scanner.hasNext()) {
                 selection = scanner.nextInt();
                 switch (selection) {

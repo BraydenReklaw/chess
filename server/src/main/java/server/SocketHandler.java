@@ -104,12 +104,6 @@ public class SocketHandler {
             sendError(session, "Invalid Move, not your turn");
             return;
         }
-        try {
-            game.makeMove(move);
-        } catch (InvalidMoveException e) {
-            sendError(session, e.getMessage());
-            return;
-        }
         String player, opponent;
         String message = null;
         if (game.getTeamTurn() == ChessGame.TeamColor.WHITE) {
@@ -119,9 +113,16 @@ public class SocketHandler {
             player = gameData.blackUsername();
             opponent = gameData.whiteUsername();
         }
+        try {
+            game.makeMove(move);
+        } catch (InvalidMoveException e) {
+            sendError(session, e.getMessage());
+            return;
+        }
         if (game.isInCheck(game.getTeamTurn())) {
             message = (player + " is in Check");
-        } else if (game.isInCheckmate(game.getTeamTurn())) {
+        }
+        if (game.isInCheckmate(game.getTeamTurn())) {
             message = (player + " is in Checkmate. The Game is over. " + opponent + " wins!");
             game.setGameOver(true);
         } else if (game.isInStalemate(game.getTeamTurn())) {
@@ -142,7 +143,7 @@ public class SocketHandler {
         char startColLetter = (char) ('a' + startCol - 1);
         char endColLetter = (char) ('a' + endCol - 1);
         sendNotificationOthers(gameSession, session, user.username() + " has made the move " +
-                startColLetter + startRow +" to " + endColLetter + endRow + ". It is now " + opponent + "'s turn.");
+                startColLetter + startRow +" to " + endColLetter + endRow); //+ ". It is now " + player + "'s turn.");
         if (message != null) {
             sendNotificationAll(gameSession, message);
         }
