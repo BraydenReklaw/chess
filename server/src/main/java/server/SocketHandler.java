@@ -123,10 +123,10 @@ public class SocketHandler {
             message = (player + " is in Check");
         }
         if (game.isInCheckmate(game.getTeamTurn())) {
-            message = (player + " is in Checkmate. The Game is over. " + opponent + " wins!");
+            message = (opponent + " is in Checkmate. The Game is over. " + player + " wins!");
             game.setGameOver(true);
         } else if (game.isInStalemate(game.getTeamTurn())) {
-            message = (player + " is in Stalemate. The Game is over. " + opponent + " wins!");
+            message = (opponent + " is in Stalemate. The Game is over. " + player + " wins!");
             game.setGameOver(true);
         }
         GameData updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
@@ -143,7 +143,7 @@ public class SocketHandler {
         char startColLetter = (char) ('a' + startCol - 1);
         char endColLetter = (char) ('a' + endCol - 1);
         sendNotificationOthers(gameSession, session, user.username() + " has made the move " +
-                startColLetter + startRow +" to " + endColLetter + endRow); //+ ". It is now " + player + "'s turn.");
+                startColLetter + startRow +" to " + endColLetter + endRow + ". It is now " + opponent + "'s turn.");
         if (message != null) {
             sendNotificationAll(gameSession, message);
         }

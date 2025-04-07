@@ -15,8 +15,8 @@ public class UI {
     public static void preLogIn(GameUI gameUI) throws IOException {
         UI.gameUI = gameUI;
         Scanner scanner = new Scanner(System.in);
-        int selection = 0;
-        while (selection != 4) {
+        String selection = "";
+        while (!selection.equals("4")) {
             System.out.println("Welcome! Make a Selection");
             System.out.println("1. Login");
             System.out.println("2. Register");
@@ -31,15 +31,15 @@ public class UI {
         scanner.close();
     }
 
-    public static int preLogSelectionHandler(Scanner scanner) throws IOException {
-        int selection = scanner.nextInt();
+    public static String preLogSelectionHandler(Scanner scanner) throws IOException {
+        String selection = scanner.next();
         switch (selection) {
-            case 3 -> System.out.println("To log in, select 1. To create a profile, select 2. " +
+            case "3" -> System.out.println("To log in, select 1. To create a profile, select 2. " +
                     "To exit, select 4");
-            case 4 -> {
+            case "4" -> {
                 System.out.println("Exited");
             }
-            case 1 -> {
+            case "1" -> {
                 AuthData user = userLogin(scanner);
                 if (user != null){
                     postLogIn(scanner, user);
@@ -49,7 +49,7 @@ public class UI {
                             "an error occurred. Please Try Again");
                 }
             }
-            case 2 -> {
+            case "2" -> {
                 AuthData user = userRegister(scanner);
                 if (user != null) {
                     postLogIn(scanner, user);
@@ -67,7 +67,7 @@ public class UI {
     }
     public static void postLogIn(Scanner scanner, AuthData user) throws IOException {
         Collection<GameData> games = new ArrayList<>();
-        int selection;
+        String selection;
         while (true) {
             System.out.println(user.username() + " logged in. Make a selection:");
             System.out.println("1. Create a Game");
@@ -79,28 +79,28 @@ public class UI {
             System.out.print("Make a selection (number): ");
 
             if (scanner.hasNext()) {
-                selection = scanner.nextInt();
+                selection = scanner.next();
                 switch (selection) {
-                    case 6 -> {
+                    case "6" -> {
                         userLogout(user);
                         System.out.println("Logging Out");
                         return;
                     }
-                    case 5 -> {
+                    case "5" -> {
                         System.out.println("To create a Game, select 1 and enter a name. To Play or Observe a Game, " +
                                 "first select List Games with 2, then give a game number to Play Game or Observe " +
                                 "Game to join or watch that game. Select 6 to Logout.");
                     }
-                    case 4 -> {
+                    case "4" -> {
                         observeGame(scanner, games, user);
                     }
-                    case 3 -> {
+                    case "3" -> {
                         playGame(scanner, user.authToken(), games, user);
                     }
-                    case 2 -> {
+                    case "2" -> {
                         games = listGames(user.authToken());
                     }
-                    case 1 -> {
+                    case "1" -> {
                         createGame(scanner, user.authToken());
                     }
                     default -> System.out.println("Invalid Choice, select a number.");
@@ -147,10 +147,17 @@ public class UI {
 
         int index = 1;
         for (GameData game : games) {
-            System.out.printf("%d. Name: %s, White Player: %s, Black Player: %s",
-                    index, game.gameName(),
-                    game.whiteUsername() != null ? game.whiteUsername() : "OPEN",
-                    game.blackUsername() != null ? game.blackUsername() : "OPEN");
+            if (game.game().getGameOver()) {
+                System.out.printf("%d. Name: %s, White Player: %s, Black Player: %s, (This Game is Over)",
+                        index, game.gameName(),
+                        game.whiteUsername() != null ? game.whiteUsername() : "OPEN",
+                        game.blackUsername() != null ? game.blackUsername() : "OPEN");
+            } else {
+                System.out.printf("%d. Name: %s, White Player: %s, Black Player: %s",
+                        index, game.gameName(),
+                        game.whiteUsername() != null ? game.whiteUsername() : "OPEN",
+                        game.blackUsername() != null ? game.blackUsername() : "OPEN");
+            }
             index++;
             System.out.println();
         }

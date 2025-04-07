@@ -15,12 +15,14 @@ import java.util.Scanner;
 public class GameUI implements ServerMessageObserver {
 
     public static DrawBoard drawer;
+    public static String drawColor;
 
     public GameUI (ChessGame game) {
         drawer = new DrawBoard(game);
     }
 
     public void gameplay(Scanner scanner, int gameID, String playerColor, AuthData user) {
+        GameUI.drawColor = playerColor;
         connect(gameID, user);
         ui(scanner, gameID, playerColor, user);
     }
@@ -37,9 +39,8 @@ public class GameUI implements ServerMessageObserver {
     }
 
     public void ui(Scanner scanner, int gameID, String playerColor, AuthData user) {
-        drawer.drawBoard(playerColor, null);
-        int selection = 0;
-        while (selection != 5) {
+        String selection = "";
+        while (!selection.equals("5")) {
             System.out.println("Please make a selection:");
             System.out.println("1. Draw Board");
             System.out.println("2. Highlight Legal Moves");
@@ -49,17 +50,17 @@ public class GameUI implements ServerMessageObserver {
             System.out.println("6. Help");
             System.out.println("Make a selection (number): ");
             if (scanner.hasNext()) {
-                selection = scanner.nextInt();
+                selection = scanner.next();
                 switch (selection) {
-                    case 6 -> loadHelp();
-                    case 1 -> drawer.drawBoard(playerColor, null);
-                    case 5 -> {
+                    case "6" -> loadHelp();
+                    case "1" -> drawer.drawBoard(playerColor, null);
+                    case "5" -> {
                         handleLeave(gameID, user);
                     }
-                    case 4 -> handleResign(scanner, gameID, user);
-                    case 2 -> handleHighlight(scanner, playerColor);
-                    case 3 -> handleMakeMove(scanner, gameID, user);
-                    default -> System.out.println("Invalid selection, please select 1-6 only");
+                    case "4" -> handleResign(scanner, gameID, user);
+                    case "2" -> handleHighlight(scanner, playerColor);
+                    case "3" -> handleMakeMove(scanner, gameID, user);
+                    default -> System.out.println("Invalid selection, please select a number.");
                 }
                 System.out.println();
             }
@@ -199,7 +200,7 @@ public class GameUI implements ServerMessageObserver {
             case ERROR -> error(message);
             case LOAD_GAME -> {
                 drawer.updateGame(message.getGame().game());
-                System.out.println("The Chessboard has been updated. It is recommended to (re)draw the Board.");
+                drawer.drawBoard(drawColor, null);
             }
         }
     }
