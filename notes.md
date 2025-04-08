@@ -5,6 +5,8 @@ Check out the example code for each of the sections
 programing exam - setup is identical to the first time setup. do it all again. make sure tests run (they will fail) before
 you start running honorlock. Pass/Fail - based on if 100% of tests pass
 
+If AWS web server is desired, follow these steps: [(link)](https://github.com/softwareconstruction240/softwareconstruction/blob/main/instruction/aws-chess-server/aws-chess-server.md)
+
 ## Java Fundamentals
 
 Similar to C++. References, not pointers. Compiler vs interpreter : compilers define code instructions for a system and then go to the system, interpreters go to system first before defining code instructions. Compilers are fast but less portable (need multiple copies of the code for different platforms/systems) while interpreters are very portable. Java is a hybrid. code is compiled for a virtual machine (most common denominator for a machine) which is then further defined for each individual machine's required.
