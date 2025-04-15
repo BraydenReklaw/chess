@@ -510,3 +510,24 @@ Race Conditions in chess:
 command line builders and compilers ensure indentical code starts for every run. Maven requires a specific project structure. There is a command demo that can generate a directory structure automatically 
 to Maven's specifications. Multi-module Projects (chess is one, with server, client, shared).
 
+
+
+cryptographic hash functions deterministic
+advantage of asymmetric key encryoption: only requires 1 key for encryption
+secure key exchange through asymmetric encryption of symmetric key
+parallelism: running things at same time (concurrency is kernal swapping)
+race condition: 2 threads modiy critical code at same time
+critical section does not apply to single threaded programs
+synchronized keyword used to protect a critical section
+a java thread cannot be created with a synchronized object
+Threadpools always add overhead
+thread .join() is the thread-wait
+database transactions do not allow partial executions of statements
+hashing with salt is used to store passwords uniquely
+Asymmetric encryption uses public/private key pairs
+Hash functions are not a good choice for encryption (can't be decrypted)
+a key from an asymmetric pair can decrypt data encrypted by the other key)
+Atomic variables can be used to avoid creating critical sections in certain cases (avoid the overhead of synchronization)
+'getAndAdd' -> adds to the integer and returns the original value. 'addAndGet' would add to int and return the new int
+maven config stored in pom.xml file
+maven: can be custoomized for a project with plugins
